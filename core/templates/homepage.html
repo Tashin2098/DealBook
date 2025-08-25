@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Diamond AI DealBook</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="{% static 'core/diamond-logo.png' %}" alt="Logo" height="36">
+            <span>Diamond AI DealBook</span>
+        </div>
+        <div class="header-actions">
+            <a href="/login/">Log in</a>
+            <a class="btn black" href="/app/">Launch App →</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="center-content">
+            <span class="incubator-label">UAE-based Incubator</span>
+            <h1>Connecting bold startups<br>with investors, the smart way</h1>
+            <p class="desc">
+                DealBook is the curated platform by Diamond AI for our founders and investors to discover opportunities,
+                manage diligence, and close rounds faster.
+            </p>
+            <div class="hero-buttons">
+                <a class="btn black" href="/explore/">Explore DealBook →</a>
+                <a class="btn" href="/login/">Join as Startup / Investor</a>
+            </div>
+            <p class="small"><a href="https://diamondai.tech">Learn more at diamondai.tech</a></p>
+        </div>
+
+        <!-- Example section for categories (Fintech, AI, etc.) -->
+        <div class="category-row">
+            <span>Fintech</span>
+            <span>AI</span>
+            <span>Health</span>
+            <span>Mobility</span>
+            <span>PropTech</span>
+            <span>Climate</span>
+        </div>
+
+        <!-- Cards Section (Curated, Deal workflow, Community support) -->
+        <div class="cards-section">
+            <div class="card">
+                <strong>Curated &amp; verified</strong>
+                <p>Access a vetted pipeline of UAE startups and investor profiles. We review each portfolio company and
+                    investor to ensure quality and fit.</p>
+            </div>
+            <div class="card">
+                <strong>Deal workflow</strong>
+                <p>From intro to diligence to closing—organized in one place. Keep data rooms, Q&amp;A, and documents
+                    streamlined and searchable.</p>
+            </div>
+            <div class="card">
+                <strong>Community support</strong>
+                <p>Leverage Diamond AI’s network, mentorship, and events. We bring founders and investors together
+                    across the UAE and beyond.</p>
+            </div>
+        </div>
+
+        <!-- For Startups & Investors -->
+        <div class="split-section">
+            <div class="split-card">
+                <strong>For Startups</strong>
+                <ul>
+                    <li>Investor-matched visibility</li>
+                    <li>Unified data room & Q&amp;A</li>
+                    <li>Warm intros via Diamond AI</li>
+                </ul>
+                <a class="btn black" href="/login/">Apply to list</a>
+            </div>
+            <div class="split-card">
+                <strong>For Investors</strong>
+                <ul>
+                    <li>Vetted deal flow</li>
+                    <li>Structured diligence</li>
+                    <li>Direct founder access</li>
+                </ul>
+                <a class="btn" href="/request/">Request access</a>
+            </div>
+        </div>
+
+        <!-- Testimonials -->
+        <div class="testimonials">
+            <div class="testimonial-card">
+                <strong>Founder testimonial</strong>
+                <p>“DealBook streamlined our raise and got us in front of the right investors.”<br><small>— Portfolio
+                        Company, UAE</small></p>
+            </div>
+            <div class="testimonial-card">
+                <strong>Founder testimonial</strong>
+                <p>“DealBook streamlined our raise and got us in front of the right investors.”<br><small>— Portfolio
+                        Company, UAE</small></p>
+            </div>
+            <div class="testimonial-card">
+                <strong>Founder testimonial</strong>
+                <p>“DealBook streamlined our raise and got us in front of the right investors.”<br><small>— Portfolio
+                        Company, UAE</small></p>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-banner">
+            <h2>Ready to explore the Diamond AI DealBook?</h2>
+            <p>Join as a startup or investor and connect with our community.</p>
+            <a class="btn black" href="/login/">Launch App →</a>
+            <a class="btn disabled" href="#">Get access</a>
+        </div>
+    </main>
+
+    <footer>
+        <span>© 2025 Diamond AI — UAE</span>
+        <nav>
+            <a href="/">Website</a>
+            <a href="/login/">Log in</a>
+        </nav>
+    </footer>
+</body>
+
+</html>

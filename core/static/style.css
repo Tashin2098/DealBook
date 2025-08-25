@@ -1,0 +1,184 @@
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #fff;
+    margin: 0;
+    color: #111;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    gap: 10px;
+}
+
+.header-actions a,
+.btn {
+    margin-left: 1.2rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 7px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #111;
+    border: 1px solid #ccc;
+    background: #fff;
+    transition: 0.2s;
+}
+
+.btn.black {
+    background: #111;
+    color: #fff;
+    border: none;
+}
+
+.btn.disabled {
+    background: #f0f0f0;
+    color: #aaa;
+    pointer-events: none;
+}
+
+.center-content {
+    text-align: center;
+    margin: 4rem auto;
+}
+
+.incubator-label {
+    background: #eee;
+    color: #222;
+    padding: 0.3rem 0.9rem;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    margin: 1.5rem 0 0.5rem;
+    letter-spacing: -2px;
+}
+
+.desc {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2.2rem;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.small {
+    color: #888;
+    font-size: 1rem;
+}
+
+.category-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.category-row span {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 0.5rem 2rem;
+    font-weight: 500;
+    background: #f9f9f9;
+}
+
+.cards-section {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2.5rem 0 1.5rem;
+}
+
+.card {
+    flex: 1;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px #e6e6e6;
+    padding: 2rem 1.5rem;
+    min-width: 200px;
+    max-width: 350px;
+}
+
+.split-section {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2.5rem 0;
+}
+
+.split-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 18px #e6e6e6;
+    padding: 2rem 1.5rem;
+    width: 400px;
+}
+
+.split-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 1.2rem 0;
+}
+
+.split-card ul li {
+    margin: 0.6rem 0;
+    font-size: 1.08rem;
+}
+
+.testimonials {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.testimonial-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px #e6e6e6;
+    padding: 1.3rem 1.2rem;
+    width: 320px;
+    font-size: 1.07rem;
+}
+
+.cta-banner {
+    background: radial-gradient(circle, #444 0%, #111 100%);
+    color: #fff;
+    padding: 2rem;
+    border-radius: 26px;
+    width: 60%;
+    margin: 2.5rem auto;
+    text-align: left;
+    box-shadow: 0 8px 32px #2223;
+}
+
+footer {
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+    font-size: 1.08rem;
+    background: #fafafa;
+}
+
+footer nav a {
+    color: #222;
+    margin-left: 2rem;
+    text-decoration: none;
+}
