@@ -11,3 +11,8 @@ def homepage(request):
     return render(request, 'homepage.html')
 def login_view(request):
     return render(request, 'login.html')
+def signup_view(request):
+    if request.method == 'POST':
+        # (Optional: custom logic or redirect to allauth's signup)
+        pass
+    return render(request, 'signup.html')
