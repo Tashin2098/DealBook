@@ -4,136 +4,66 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up — Diamond AI DealBook</title>
+    <title>Create your account — DealBook</title>
     <link rel="stylesheet" href="{% static 'core/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        html,
         body {
-            height: 100%;
-            margin: 0;
             background: #fff;
-            font-family: 'Inter', Arial, sans-serif;
-            color: #222;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .back-link {
-            margin: 32px 0 0 60px;
-            font-size: 1.1rem;
-            color: #888;
-            display: block;
-            text-decoration: none;
         }
 
         .center-signup {
-            flex: 1;
             display: flex;
-            align-items: center;
             justify-content: center;
-            min-height: 80vh;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .signup-box {
-            width: 430px;
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 36px rgba(20, 20, 20, 0.08);
-            padding: 38px 36px 24px 36px;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #eee;
+            padding: 2.5rem 2.5rem 1.5rem 2.5rem;
+            width: 430px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .signup-box h2 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin: 0 0 8px 0;
-        }
-
-        .signup-box p {
-            color: #777;
-            font-size: 1.12rem;
-            margin-bottom: 18px;
-            margin-top: 0;
-        }
-
-        .btn-google {
-            width: 100%;
-            background: #fff;
-            color: #222;
-            border: 1.5px solid #e0e0e0;
-            font-weight: 600;
-            padding: 0.7rem 0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-bottom: 18px;
-            font-size: 1.04rem;
-            transition: box-shadow 0.2s;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn-google:hover {
-            box-shadow: 0 2px 8px rgba(150, 150, 150, 0.09);
-            border-color: #b3b3b3;
-        }
-
-        .or-divider {
-            width: 100%;
-            text-align: center;
-            color: #bbb;
-            font-size: 1.05rem;
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .or-divider:before,
-        .or-divider:after {
-            content: "";
-            display: inline-block;
-            width: 45%;
-            height: 1px;
-            background: #eee;
-            vertical-align: middle;
-            margin: 0 10px;
+            margin-top: 0.4rem;
+            font-size: 2rem;
+            font-weight: bold;
         }
 
         .signup-box form {
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-        }
-
-        .signup-box label {
-            font-size: 1rem;
-            color: #222;
-            margin-bottom: 2px;
+            gap: 1rem;
         }
 
         .signup-box input {
             width: 100%;
-            padding: 0.93rem 1rem;
-            font-size: 1.07rem;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
             border-radius: 7px;
-            border: 1.4px solid #e0e0e0;
-            background: #f4f7fb;
-            outline: none;
-            transition: border 0.15s;
+            border: 1px solid #ccc;
         }
 
-        .signup-box input:focus {
-            border-color: #467afc;
+        .btn-google {
+            width: 100%;
             background: #fff;
+            color: #222;
+            border: 1px solid #ddd;
+            font-weight: 500;
+            padding: 0.7rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 0.7rem;
+            cursor: pointer;
         }
 
         .btn-signup {
@@ -141,83 +71,81 @@
             color: #fff;
             border: none;
             border-radius: 8px;
-            font-weight: 600;
-            padding: 1rem 0;
-            font-size: 1.18rem;
+            font-weight: bold;
+            padding: 0.8rem;
+            font-size: 1.1rem;
             width: 100%;
-            margin-top: 6px;
+            margin-top: 0.2rem;
             cursor: pointer;
-            transition: background 0.14s;
         }
 
-        .btn-signup:hover {
-            background: #222;
+        .or-divider {
+            text-align: center;
+            margin: 1rem 0;
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+
+        .login-bottom {
+            margin-top: 0.6rem;
+            font-size: 1rem;
+            text-align: center;
+            color: #555;
         }
 
         .tos {
-            font-size: 0.99rem;
+            font-size: 0.97rem;
             color: #888;
             text-align: center;
-            margin: 14px 0 0 0;
+            margin-top: 0.4rem;
         }
 
-        .tos a {
-            color: #6076f7;
+        a {
+            color: #222;
             text-decoration: underline;
         }
 
-        .signup-bottom {
-            margin-top: 22px;
-            font-size: 1.04rem;
-            text-align: center;
-            color: #444;
-        }
-
-        .signup-bottom a {
-            color: #3e54e9;
-            text-decoration: underline;
-        }
-
-        @media (max-width: 600px) {
-            .signup-box {
-                width: 98vw;
-                padding: 18px 5vw 22px 5vw;
-            }
+        .error-message {
+            background: #ffe5e5;
+            color: #d20000;
+            padding: 0.6em 1em;
+            border-radius: 7px;
+            margin-bottom: 0.6em;
+            width: 100%;
+            font-size: 1em;
+            border: 1px solid #fbb;
         }
     </style>
 </head>
 
 <body>
-    <a href="/" class="back-link">&larr; Back to Home</a>
     <div class="center-signup">
         <div class="signup-box">
             <h2>Create your account</h2>
-            <p>Sign up to get started</p>
-            <!-- Google Signup Button -->
+            <p style="color:#888;">Sign up to get started</p>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="error-message">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
             <a href="/accounts/google/login/" class="btn-google">
-                <img src="{% static 'core/google-icon.png' %}" alt="Google" height="22" style="margin-right:5px;">
+                <img src="{% static 'core/google-icon.png' %}" alt="Google" height="22">
                 Continue with Google
             </a>
-            <div class="or-divider">OR</div>
+            <div class="or-divider">───────── &nbsp; or &nbsp; ─────────</div>
             <form method="post" action="">
                 {% csrf_token %}
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" placeholder="Jane Doe" required>
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" placeholder="you@example.com" required>
-                <label for="password1">Password</label>
-                <input type="password" name="password1" id="password1" placeholder="Password" required>
-                <label for="password2">Confirm Password</label>
-                <input type="password" name="password2" id="password2" placeholder="Confirm Password" required>
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password1" placeholder="Password (min 8 characters)" minlength="8"
+                    required>
+                <input type="password" name="password2" placeholder="Confirm Password" minlength="8" required>
                 <button type="submit" class="btn-signup">Create account</button>
             </form>
             <div class="tos">
-                By continuing, you agree to our
-                <a href="#">Terms of Service</a>
-                and
-                <a href="#">Privacy Policy</a>.
+                By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
             </div>
-            <div class="signup-bottom">
+            <div class="login-bottom">
                 Already have an account? <a href="/login/">Sign in</a>
             </div>
         </div>
