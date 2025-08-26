@@ -1,13 +1,11 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up — Diamond AI DealBook</title>
-    <link rel="stylesheet" href="{% static 'core/style.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
+    <title>Create your account — DealBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
         html,
         body {
             height: 100%;
@@ -71,6 +69,18 @@
             margin-bottom: 24px;
             margin-top: 0;
             text-align: center;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            width: 100%;
+            font-size: 0.875rem;
+            border: 1px solid #fecaca;
+            box-sizing: border-box;
         }
 
         .btn-google {
@@ -141,18 +151,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .signup-box label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 6px;
-            display: block;
+            gap: 16px;
         }
 
         .signup-box input {
@@ -222,6 +221,22 @@
             font-weight: 500;
         }
 
+        .flash-message {
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* Error messages */
+.flash-message.error {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+
+
         @media (max-width: 600px) {
             .signup-box {
                 width: calc(100vw - 32px);
@@ -242,10 +257,20 @@
         </svg>
         Back to Home
     </a>
+
     <div class="center-signup">
         <div class="signup-box">
             <h2>Create your account</h2>
             <p>Sign up to get started</p>
+            
+            <!-- Error Messages -->
+            {% if messages %}
+    {% for message in messages %}
+    <div class="flash-message {{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
             
             <!-- Google Signup Button -->
             <a href="/accounts/google/login/" class="btn-google">
@@ -256,26 +281,11 @@
             <div class="or-divider">or</div>
             
             <form method="post" action="">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" name="name" id="name" placeholder="Jane Doe" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" placeholder="you@example.com" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password1">Password</label>
-                    <input type="password" name="password1" id="password1" placeholder="••••••••" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password2">Confirm Password</label>
-                    <input type="password" name="password2" id="password2" placeholder="••••••••" required>
-                </div>
-                
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password1" placeholder="Password (min 8 characters)" minlength="8" required>
+                <input type="password" name="password2" placeholder="Confirm Password" minlength="8" required>
                 <button type="submit" class="btn-signup">Create account</button>
             </form>
             
@@ -293,6 +303,15 @@
     </div>
 </body>
 
-
+<script>
+    // Wait 2 seconds then fade out messages
+    setTimeout(() => {
+        document.querySelectorAll('.flash-message').forEach(msg => {
+            msg.style.transition = "opacity 0.5s ease";
+            msg.style.opacity = "0";
+            setTimeout(() => msg.remove(), 500); // remove after fade
+        });
+    }, 2000); // 2000ms = 2s
+</script>
 
 </html>

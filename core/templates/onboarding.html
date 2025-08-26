@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Onboarding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: #9ca3af;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            font-size: 0.95rem;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .back-link:hover {
+            color: #374151;
+        }
+
+        .center-box {
+            width: 480px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            text-align: left;
+            padding: 32px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #111827;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 24px 0;
+        }
+
+        .welcome-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 0;
+        }
+
+        .welcome-section h3 {
+            color: #111827;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .welcome-section p {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin: 0 0 20px 0;
+            line-height: 1.5;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        .onboard-btn {
+            background: #111827;
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 0.875rem;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-family: inherit;
+        }
+
+        .onboard-btn:hover {
+            background: #1f2937;
+        }
+
+        .onboard-btn.secondary {
+            background: #ffffff;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .onboard-btn.secondary:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 8px;">
+            <path d="M8.5 2.5L3 8l5.5 5.5L9 13l-4.5-4.5L9 4l-.5-.5z"/>
+        </svg>
+        Back to Home
+    </a>
+
+    <div class="center-box">
+        <h2>Complete your onboarding</h2>
+        <div class="welcome-section">
+            <h3>Welcome</h3>
+            <p>Choose your path to continue onboarding.</p>
+            <div class="button-container">
+                <button class="onboard-btn" onclick="window.location.href='{% url 'onboard_step1' %}'">I am a Startup</button>
+                <button class="onboard-btn secondary" onclick="window.location.href='{% url 'investor_onboarding' %}'">I am an Investor</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

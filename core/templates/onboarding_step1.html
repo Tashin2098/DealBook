@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Startup Onboarding - Step 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #9CA3AF;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .center-box {
+            width: 100%;
+            max-width: 480px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+
+        .step-indicator {
+            color: #6B7280;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .form-field {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #D1D5DB;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #1F2937;
+            background: #fff;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: #9CA3AF;
+        }
+
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .btn-back {
+            background: #fff;
+            color: #374151;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background: #F9FAFB;
+            border-color: #9CA3AF;
+        }
+
+        .btn-main {
+            background: #1F2937;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-main:hover {
+            background: #111827;
+        }
+
+        .btn-main:active,
+        .btn-back:active {
+            transform: translateY(1px);
+        }
+
+        .alert {
+            color: #DC2626;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .center-box {
+                padding: 24px;
+                margin: 10px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center-box">
+        <h2>Complete your onboarding</h2>
+        <div class="step-indicator">Step 1 of 5: Invest in the Future of Innovation</div>
+        
+        
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                <label class="form-label">What is the name of your start up?</label>
+                <input type="text" class="form-input" name="startup_name" placeholder="Startup name" required
+                    value="{{ startup_name|default:'' }}">
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">What's your role in the start up?</label>
+                <input type="text" class="form-input" name="role" placeholder="Your role" required value="{{ role|default:'' }}">
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">Email address</label>
+                <input type="email" class="form-input" name="email" placeholder="john@example.com" required value="{{ email|default:'' }}">
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">Company website</label>
+                <input type="text" class="form-input" name="website" placeholder="https://example.com" required value="{{ website|default:'' }}">
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">How did you hear about Diamond AI?</label>
+                <select class="form-select" name="heard_about" required>
+                    <option value="">Select an option</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Friend">Friend</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">Briefly describe your startup and its main products or services</label>
+                <textarea class="form-textarea" name="description" placeholder="Describe your startup..." required>{{ description|default:'' }}</textarea>
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">Who is your target audience?</label>
+                <textarea class="form-textarea" name="audience" placeholder="Describe your target audience..." required>{{ audience|default:'' }}</textarea>
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">Is there any tech component in your startup idea? If yes, briefly describe it.</label>
+                <textarea class="form-textarea" name="tech_component" placeholder="Describe the tech component..." required>{{ tech_component|default:'' }}</textarea>
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">What sets your startup apart from competitors?</label>
+                <textarea class="form-textarea" name="your_edge" placeholder="What makes you unique..." required>{{ your_edge|default:'' }}</textarea>
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">Pitch deck URL (PDF or PPT)</label>
+                <input type="text" class="form-input" name="pitch_deck_url" placeholder="https://example.com/pitch.pdf" required
+                    value="{{ pitch_deck_url|default:'' }}">
+            </div>
+            
+            <div class="form-field">
+                <label class="form-label">At what stage does your startup stand?</label>
+                <select class="form-select" name="startup_stage" required>
+                    <option value="">Select stage</option>
+                    <option value="Idea Stage">Idea Stage: Developing Your Vision</option>
+                    <option value="Prototype Stage">Prototype Stage: Testing Your Concept</option>
+                    <option value="Revenue Stage">Revenue Stage: Earning Revenue</option>
+                    <option value="Growth Stage">Growth Stage: Scaling Up</option>
+                </select>
+            </div>
+            
+            <div class="button-container">
+                <button class="btn-back" type="button" onclick="window.location.href='{% url 'onboarding' %}'">Back</button>
+                <button class="btn-main" type="submit">Next</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
