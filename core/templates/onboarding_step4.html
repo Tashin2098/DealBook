@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Startup Onboarding - Step 4</title>
+    <style>
+        body {
+            background: #888A8F;
+        }
+
+        .center-box {
+            margin: 40px auto;
+            width: 520px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 6px 32px rgba(31, 41, 55, 0.2);
+            padding: 32px 40px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-field {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 6px;
+        }
+
+        .btn-main {
+            background: #111;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .alert {
+            color: #d32f2f;
+            margin-bottom: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center-box">
+        <h2>Startup Application</h2>
+        <p>Step 4 of 5: Seed Stage: Gaining Traction & Scaling Up</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                <label class="form-label">What is your current business model?</label>
+                <textarea class="form-textarea" name="business_model" required>{{ business_model }}</textarea>
+            </div>
+            <div class="form-field">
+                <label class="form-label">How many paying customers or active users do you have?</label>
+                <input type="text" class="form-input" name="paying_customers" required value="{{ paying_customers }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">What is your current annual revenue?</label>
+                <input type="text" class="form-input" name="annual_revenue_4" required value="{{ annual_revenue_4 }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">Have you raised any external funding?</label>
+                <select class="form-select" name="external_funding" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">What is your current team size?</label>
+                <input type="text" class="form-input" name="team_size" required value="{{ team_size }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">What are your customer acquisition strategies?</label>
+                <textarea class="form-textarea" name="acquisition_strategies"
+                    required>{{ acquisition_strategies }}</textarea>
+            </div>
+            <div class="form-field">
+                <label class="form-label">What are your key challenges at this stage?</label>
+                <textarea class="form-textarea" name="stage4_challenges" required>{{ stage4_challenges }}</textarea>
+            </div>
+            <div class="form-field">
+                <label class="form-label">What type of support do you need from Diamond AI?</label>
+                <textarea class="form-textarea" name="stage4_support" required>{{ stage4_support }}</textarea>
+            </div>
+            <button class="btn-main" type="submit">Next</button>
+        </form>
+        <form action="{% url 'onboard_step3' %}" method="get" style="display:inline;">
+            <button class="btn-main" type="submit" style="margin-top:12px;background:#999;">Back</button>
+        </form>
+    </div>
+</body>
+
+</html>

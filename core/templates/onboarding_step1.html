@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Startup Onboarding - Step 1</title>
+    <style>
+        body {
+            background: #888A8F;
+        }
+
+        .center-box {
+            margin: 40px auto;
+            width: 520px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 6px 32px rgba(31, 41, 55, 0.2);
+            padding: 32px 40px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-field {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 6px;
+        }
+
+        .btn-main {
+            background: #111;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .alert {
+            color: #d32f2f;
+            margin-bottom: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center-box">
+        <h2>Startup Application</h2>
+        <p>Step 1 of 5: Diamond AI</p>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                <label class="form-label">What is the name of your start up?</label>
+                <input type="text" class="form-input" name="startup_name" required
+                    value="{{ startup_name|default:'' }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">What’s your role in the start up?</label>
+                <input type="text" class="form-input" name="role" required value="{{ role|default:'' }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">Email address</label>
+                <input type="email" class="form-input" name="email" required value="{{ email|default:'' }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">Company website</label>
+                <input type="text" class="form-input" name="website" required value="{{ website|default:'' }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">How did you hear about Diamond AI?</label>
+                <select class="form-select" name="heard_about" required>
+                    <option value="">Select source</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Friend">Friend</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Briefly describe your startup and its main products or services</label>
+                <textarea class="form-textarea" name="description" required>{{ description|default:'' }}</textarea>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Who is your target audience?</label>
+                <textarea class="form-textarea" name="audience" required>{{ audience|default:'' }}</textarea>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Is there any tech component in your startup idea? If yes, briefly describe
+                    it.</label>
+                <textarea class="form-textarea" name="tech_component"
+                    required>{{ tech_component|default:'' }}</textarea>
+            </div>
+            <div class="form-field">
+                <label class="form-label">What sets your startup apart from competitors?</label>
+                <textarea class="form-textarea" name="your_edge" required>{{ your_edge|default:'' }}</textarea>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Pitch deck URL (PDF or PPT)</label>
+                <input type="text" class="form-input" name="pitch_deck_url" required
+                    value="{{ pitch_deck_url|default:'' }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">At what stage does your startup stand?</label>
+                <select class="form-select" name="startup_stage" required>
+                    <option value="">Select stage</option>
+                    <option value="Idea Stage">Idea Stage: Developing Your Vision</option>
+                    <option value="Prototype Stage">Prototype Stage: Testing Your Concept</option>
+                    <option value="Revenue Stage">Revenue Stage: Earning Revenue</option>
+                    <option value="Growth Stage">Growth Stage: Scaling Up</option>
+                </select>
+            </div>
+            <button class="btn-main" type="submit">Next</button>
+        </form>
+    </div>
+</body>
+
+</html>

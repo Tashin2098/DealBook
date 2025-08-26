@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Startup Application Submitted</title>
+    <style>
+        body {
+            background: #f7f9fb;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .center-box {
+            margin: 90px auto;
+            max-width: 440px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 22px rgba(51, 65, 85, 0.13);
+            text-align: center;
+            padding: 48px 32px 48px 32px;
+        }
+
+        h2 {
+            color: #22334d;
+            font-size: 2.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        p {
+            color: #516;
+            font-size: 1.13rem;
+            margin-bottom: 12px;
+        }
+
+        .approved {
+            color: #1ea672;
+            font-weight: 600;
+        }
+
+        .pending {
+            color: #ff6b00;
+            font-weight: 600;
+        }
+
+        .user-welcome {
+            color: #22334d;
+            font-size: 1.13rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center-box">
+        <h2>Application Submitted</h2>
+        <div class="user-welcome">
+            Hello {{ user_name }}{% if company_name %},<br>Startup: <strong>{{ company_name }}</strong>{% endif %}
+        </div>
+        {% if is_approved %}
+        <p class="approved">🎉 Your startup profile is <strong>APPROVED</strong>.<br>
+            Welcome to DiamondAI DealBook!</p>
+        {% else %}
+        <p class="pending">Thank you for completing your startup onboarding.<br>
+            <br>Your application is under review. <br>
+            <span style="font-size: 1.08rem;">Our admin will approve your profile soon.</span>
+        </p>
+        {% endif %}
+        <a href="{% url 'homepage' %}"
+            style="display: inline-block; margin-top: 22px; background: #22334d; color: #fff; border-radius: 9px; padding: 13px 38px; text-decoration: none; font-weight: 600;">Go
+            to Homepage</a>
+    </div>
+</body>
+
+</html>

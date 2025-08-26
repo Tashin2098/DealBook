@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Startup Onboarding - Step 2</title>
+    <style>
+        body {
+            background: #888A8F;
+        }
+
+        .center-box {
+            margin: 40px auto;
+            width: 520px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 6px 32px rgba(31, 41, 55, 0.2);
+            padding: 32px 40px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-field {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 6px;
+        }
+
+        .btn-main {
+            background: #111;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .alert {
+            color: #d32f2f;
+            margin-bottom: 14px;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center-box">
+        <h2>Startup Application</h2>
+        <p>Step 2 of 5: Idea Stage: Developing Your Vision</p>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                <label class="form-label">What problem does your startup aim to solve?</label>
+                <input type="text" class="form-input" name="problem" required value="{{ problem|default:'' }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">What is your proposed solution?</label>
+                <input type="text" class="form-input" name="solution" required value="{{ solution|default:'' }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">Have you conducted any market research?</label>
+                <select class="form-select" name="market_research" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Do you have a business model in mind?</label>
+                <select class="form-select" name="business_model_mind" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Are you working on this full-time or part-time?</label>
+                <select class="form-select" name="working_time" required>
+                    <option value="">Select</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Do you have a co-founder or team?</label>
+                <select class="form-select" name="cofounder" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">What support do you need from Diamond AI?</label>
+                <textarea class="form-textarea" name="support_needed" required>{{ support|default:'' }}</textarea>
+            </div>
+            <div class="button-row">
+                <a href="{% url 'onboard_step1' %}" class="btn-main" style="background:#aaa;">Back</a>
+
+                <button class="btn-main" type="submit">Next</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

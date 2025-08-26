@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Startup Onboarding - Step 3</title>
+    <style>
+        body {
+            background: #888A8F;
+        }
+
+        .center-box {
+            margin: 40px auto;
+            width: 520px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 6px 32px rgba(31, 41, 55, 0.2);
+            padding: 32px 40px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-field {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 6px;
+        }
+
+        .btn-main {
+            background: #111;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #e5e5e5;
+            color: #222;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 18px;
+            border: none;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .alert {
+            color: #d32f2f;
+            margin-bottom: 14px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center-box">
+        <h2>Startup Application</h2>
+        <p>Step 3 of 5: Pre-Seed Stage: Building and Validating</p>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-field">
+                <label class="form-label">Have you developed a prototype or Minimum Viable Product (MVP)?</label>
+                <select class="form-select" name="has_mvp" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Have you tested your product/service with potential customers?</label>
+                <select class="form-select" name="tested_with_customers" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">How are you currently funding your startup?</label>
+                <select class="form-select" name="funding_source" required>
+                    <option value="">Select source</option>
+                    <option value="Self-funded">Self-funded</option>
+                    <option value="Friends/Family">Friends/Family</option>
+                    <option value="Investors">Investors</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Do you have any early users or customers?</label>
+                <select class="form-select" name="early_users" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">Have you generated any revenue?</label>
+                <select class="form-select" name="generated_revenue" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-field">
+                <label class="form-label">What are your biggest challenges right now?</label>
+                <input type="text" class="form-input" name="stage3_challenges" required
+                    value="{{ challenges|default:'' }}">
+            </div>
+            <div class="form-field">
+                <label class="form-label">What type of support do you need from Diamond AI?</label>
+                <textarea class="form-textarea" name="stage3_support" required>{{ support_needs|default:'' }}</textarea>
+            </div>
+            <div class="btn-row">
+                <button class="btn-secondary" name="back" type="submit">Back</button>
+                <button class="btn-main" type="submit">Next</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
