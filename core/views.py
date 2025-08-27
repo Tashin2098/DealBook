@@ -57,7 +57,13 @@ def post_login_view(request):
     user = request.user
     if user.is_staff or user.is_superuser:
         return redirect('admin_dashboard')
+
+    # --- THIS IS NEW: Check for StartupProfile
+    if hasattr(user, 'startup_profile'):
+        # They already completed startup onboarding, show approval page
+        return redirect('startup_onboard_complete')
     else:
+        # Not completed onboarding, send to onboarding
         return redirect('onboarding')
 
 @staff_member_required
@@ -67,6 +73,9 @@ def admin_dashboard(request):
 @login_required
 def onboarding_view(request):
     return render(request, 'onboarding.html')
+
+def investor_onboarding(request):
+    return render(request, "investor_onboarding_form.html")
 
 # ---------------- ONBOARDING MULTISTEP ----------------
 

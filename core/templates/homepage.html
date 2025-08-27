@@ -7,12 +7,13 @@
     <title>Diamond AI DealBook</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 
 <body>
     <header class="navbar">
         <div class="logo">
-            <img src="{% static 'core/diamond-logo.png' %}" alt="Logo" height="36">
+            <div class="logo-icon">◊</div>
             <span>Diamond AI DealBook</span>
         </div>
         <div class="header-actions">
@@ -36,7 +37,7 @@
             <p class="small"><a href="https://diamondai.tech">Learn more at diamondai.tech</a></p>
         </div>
 
-        <!-- Example section for categories (Fintech, AI, etc.) -->
+        <!-- Categories -->
         <div class="category-row">
             <span>Fintech</span>
             <span>AI</span>
@@ -46,21 +47,21 @@
             <span>Climate</span>
         </div>
 
-        <!-- Cards Section (Curated, Deal workflow, Community support) -->
+        <!-- Feature Cards -->
         <div class="cards-section">
             <div class="card">
-                <strong>Curated &amp; verified</strong>
+                <strong><i class=" fas fa-shield-alt"></i>&nbsp;Curated & verified</strong>
                 <p>Access a vetted pipeline of UAE startups and investor profiles. We review each portfolio company and
                     investor to ensure quality and fit.</p>
             </div>
             <div class="card">
-                <strong>Deal workflow</strong>
-                <p>From intro to diligence to closing—organized in one place. Keep data rooms, Q&amp;A, and documents
+                <strong><i class="fas fa-chart-line"></i>&nbsp;Deal workflow</strong>
+                <p>From intro to diligence to closing—organized in one place. Keep data rooms, Q&A, and documents
                     streamlined and searchable.</p>
             </div>
             <div class="card">
-                <strong>Community support</strong>
-                <p>Leverage Diamond AI’s network, mentorship, and events. We bring founders and investors together
+                <strong><i class="fas fa-users"></i>&nbsp;Community support</strong>
+                <p>Leverage Diamond AI's network, mentorship, and events. We bring founders and investors together
                     across the UAE and beyond.</p>
             </div>
         </div>
@@ -68,16 +69,18 @@
         <!-- For Startups & Investors -->
         <div class="split-section">
             <div class="split-card">
-                <strong>For Startups</strong>
+                <strong><i class="fas fa-regular fa-building"></i>&nbsp;For Startups</strong>
+                <p style="color: #666; margin-bottom: 1rem;">Showcase traction and raise smarter capital.</p>
                 <ul>
                     <li>Investor-matched visibility</li>
-                    <li>Unified data room & Q&amp;A</li>
+                    <li>Unified data room & Q&A</li>
                     <li>Warm intros via Diamond AI</li>
                 </ul>
                 <a class="btn black" href="/login/">Apply to list</a>
             </div>
             <div class="split-card">
-                <strong>For Investors</strong>
+                <strong><i class="fas fa-users"></i>&nbsp;For Investors</strong>
+                <p style="color: #666; margin-bottom: 1rem;">Discover curated UAE opportunities.</p>
                 <ul>
                     <li>Vetted deal flow</li>
                     <li>Structured diligence</li>
@@ -91,17 +94,17 @@
         <div class="testimonials">
             <div class="testimonial-card">
                 <strong>Founder testimonial</strong>
-                <p>“DealBook streamlined our raise and got us in front of the right investors.”<br><small>— Portfolio
+                <p>"DealBook streamlined our raise and got us in front of the right investors."<br><small>— Portfolio
                         Company, UAE</small></p>
             </div>
             <div class="testimonial-card">
                 <strong>Founder testimonial</strong>
-                <p>“DealBook streamlined our raise and got us in front of the right investors.”<br><small>— Portfolio
+                <p>"DealBook streamlined our raise and got us in front of the right investors."<br><small>— Portfolio
                         Company, UAE</small></p>
             </div>
             <div class="testimonial-card">
                 <strong>Founder testimonial</strong>
-                <p>“DealBook streamlined our raise and got us in front of the right investors.”<br><small>— Portfolio
+                <p>"DealBook streamlined our raise and got us in front of the right investors."<br><small>— Portfolio
                         Company, UAE</small></p>
             </div>
         </div>
