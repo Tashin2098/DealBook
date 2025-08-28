@@ -1,0 +1,35 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Users{% endblock %}
+
+{% block content %}
+    <h1>Admins</h1>
+    <table border="0" cellpadding="10" style="width:100%; background:#fff; border-radius:10px; box-shadow:0 4px 16px #dde;">
+        <thead style="background:#f4f5f7;">
+            <tr>
+                <th align="left">Name</th>
+                <th align="left">Email</th>
+                <th align="left">Role</th>
+                <th align="left">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.first_name|default:user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if user.is_superuser or user.is_staff %}
+                        admin
+                    {% elif user.startup_profile %}
+                        startup
+                    {% else %}
+                        investor
+                    {% endif %}
+                </td>
+                <td>{{ user.date_joined|date:"d/m/Y, H:i:s" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

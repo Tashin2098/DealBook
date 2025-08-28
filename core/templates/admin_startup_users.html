@@ -1,0 +1,179 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% load startup_extras %}
+
+{% block title %}Startup Users{% endblock %}
+
+{% block content %}
+<h2 style="font-size: 2rem; font-weight: 700;">Startups</h2>
+<div style="margin: 18px 0 30px 0;">
+    <input type="text" placeholder="Search company/name/email" style="width:340px; font-size:1.1rem; padding:8px 14px;">
+    <button style="padding:8px 19px; font-size:1rem; border-radius:8px; background:#eee; margin-left:10px;">Search</button>
+</div>
+<table style="width: 100%; background:#fff; border-radius:18px; box-shadow: 0 3px 16px #e2e7ee2a; border-collapse:separate; border-spacing:0; overflow: hidden;">
+    <thead>
+        <tr style="font-weight:600; font-size:1.1rem; background: #f9fafb;">
+            <th style="padding:14px 18px;">Company</th>
+            <th style="padding:14px 18px;">Contact</th>
+            <th>Approved</th>
+            <th>Onboarded</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in startups %}
+        <tr style="border-bottom:1.5px solid #f1f1f5;">
+            <td style="padding:13px 18px;">{{ s.startup_name }}</td>
+            <td style="padding:13px 18px;">
+                {{ s.user.first_name }}<br>
+                <span style="font-size:13px;color:#8a8e9d">{{ s.user.email }}</span>
+            </td>
+            <td>
+                <label class="switch">
+                    <input type="checkbox" data-id="{{ s.id }}" data-field="is_approved" {% if s.is_approved %}checked{% endif %}>
+                    <span class="slider"></span>
+                </label>
+            </td>
+            <td>
+                <label class="switch">
+                    <input type="checkbox" data-id="{{ s.id }}" data-field="is_onboarded" {% if s.is_onboarded %}checked{% endif %} {% if not s.is_approved %}disabled{% endif %}>
+                    <span class="slider"></span>
+                </label>
+            </td>
+            <td>
+                <!-- This is the important change: -->
+                <button class="btn view-details-btn" data-startup="{{ s|as_json|escapejs }}">View</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<!-- Minimal switch styling -->
+<style>
+.switch { position: relative; display: inline-block; width: 48px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #eee; border-radius: 24px; transition: .3s;
+}
+.slider:before {
+    position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: #fff; border-radius: 50%;
+    transition: .3s; box-shadow: 0 1px 6px #bbc;
+}
+input:checked + .slider { background-color: #328cff;}
+input:checked + .slider:before { transform: translateX(24px);}
+</style>
+
+<!-- MODAL for details -->
+<div id="startupModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(34,34,40,0.25); z-index:100;">
+    <div id="startupModalBox" style="max-width:700px; margin: 40px auto; background:white; border-radius:18px; padding:38px; box-shadow:0 10px 40px #1113; overflow-y:auto; max-height:90vh; position:relative;">
+        <button onclick="closeModal()" style="position:absolute; top:20px; right:22px; font-size:24px; border:none; background:transparent; cursor:pointer;">&times;</button>
+        <div id="startupModalContent"></div>
+    </div>
+</div>
+<script>
+function closeModal() {
+    document.getElementById('startupModal').style.display = 'none';
+}
+document.addEventListener('DOMContentLoaded', function() {
+    // Details modal
+    document.querySelectorAll('.view-details-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            try {
+                const data = JSON.parse(this.dataset.startup);
+
+                let html = `
+                <h2 style="font-weight:700; margin-bottom:10px;">Startup details</h2>
+                <hr style="margin-bottom:15px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;">
+                    <b>Section 1</b> <span></span>
+                    <span>Startup name</span> <span>${data.startup_name}</span>
+                    <span>Contact</span> <span>${data.user_first_name} <br><small>${data.user_email}</small></span>
+                    <span>Role</span> <span>${data.role}</span>
+                    <span>Email</span> <span>${data.email}</span>
+                    <span>How heard about us</span> <span>${data.heard_about}</span>
+                    <span>Description</span> <span>${data.description}</span>
+                    <span>Audience</span> <span>${data.audience}</span>
+                    <span>Tech component</span> <span>${data.tech_component}</span>
+                    <span>Your edge</span> <span>${data.your_edge}</span>
+                    <span>Pitch deck</span> <span>${data.pitch_deck_url}</span>
+                    <span>Startup stage</span> <span>${data.startup_stage}</span>
+                </div>
+                <hr style="margin:18px 0;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;">
+                    <b>Section 2</b> <span></span>
+                    <span>Problem</span> <span>${data.problem}</span>
+                    <span>Solution</span> <span>${data.solution}</span>
+                    <span>Market Research?</span> <span>${data.market_research}</span>
+                    <span>Business Model?</span> <span>${data.business_model_mind}</span>
+                    <span>Full/Part Time?</span> <span>${data.working_time}</span>
+                    <span>Co-founder?</span> <span>${data.cofounder}</span>
+                    <span>Support needed</span> <span>${data.support_needed}</span>
+                </div>
+                <hr style="margin:18px 0;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;">
+                    <b>Section 3</b> <span></span>
+                    <span>Prototype/MVP?</span> <span>${data.has_mvp}</span>
+                    <span>Tested with customers?</span> <span>${data.tested_with_customers}</span>
+                    <span>Funding source</span> <span>${data.funding_source}</span>
+                    <span>Early users</span> <span>${data.early_users}</span>
+                    <span>Revenue</span> <span>${data.generated_revenue}</span>
+                    <span>Challenges</span> <span>${data.stage3_challenges}</span>
+                    <span>Support Needs</span> <span>${data.stage3_support}</span>
+                </div>
+                <hr style="margin:18px 0;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;">
+                    <b>Section 4</b> <span></span>
+                    <span>Business model</span> <span>${data.business_model}</span>
+                    <span>Paying customers</span> <span>${data.paying_customers}</span>
+                    <span>Annual revenue</span> <span>${data.annual_revenue_4}</span>
+                    <span>External funding?</span> <span>${data.external_funding}</span>
+                    <span>Acquisition strategies</span> <span>${data.acquisition_strategies}</span>
+                    <span>Team size</span> <span>${data.team_size}</span>
+                    <span>Stage challenges</span> <span>${data.stage4_challenges}</span>
+                    <span>Stage support</span> <span>${data.stage4_support}</span>
+                </div>
+                <hr style="margin:18px 0;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;">
+                    <b>Section 5</b> <span></span>
+                    <span>Annual revenue</span> <span>${data.annual_revenue_5}</span>
+                    <span>Active customers</span> <span>${data.active_customers_5}</span>
+                    <span>Markets operating</span> <span>${data.markets_operating}</span>
+                    <span>Expansion plans</span> <span>${data.expansion_plans}</span>
+                    <span>Stage 5 challenges</span> <span>${data.stage5_challenges}</span>
+                </div>
+                `;
+                document.getElementById('startupModalContent').innerHTML = html;
+                document.getElementById('startupModal').style.display = 'block';
+            } catch (e) {
+                alert('Failed to parse details: ' + e);
+            }
+        });
+    });
+
+    // Approval/onboarded toggle (no change)
+    document.querySelectorAll('input[type="checkbox"][data-field]').forEach(function(el) {
+        el.addEventListener('change', function() {
+            fetch("{% url 'toggle_startup_status' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: this.dataset.id,
+                    field: this.dataset.field,
+                    value: this.checked
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(!data.success) {
+                    alert("Failed to update: " + (data.error || ""));
+                    this.checked = !this.checked; // Revert toggle on error
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

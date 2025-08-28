@@ -4,10 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import StartupProfile
-
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 @api_view(['GET'])
 def hello_world(request):
     return Response({"message": "Hello, DealBook API!"})
@@ -69,6 +70,40 @@ def post_login_view(request):
 @staff_member_required
 def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def admin_users_view(request):
+    users = User.objects.all().order_by('-date_joined')
+    return render(request, "admin_users.html", {"users": users})
+
+@staff_member_required
+def startup_users_admin(request):
+    startups = StartupProfile.objects.all().select_related('user').order_by('-submitted_at')
+    return render(request, 'admin_startup_users.html', {
+        'startups': startups
+    })
+
+@require_POST
+@staff_member_required
+def toggle_startup_status(request):
+    import json
+    data = json.loads(request.body)
+    sid = data.get("id")
+    field = data.get("field")
+    value = data.get("value")
+    # Parse value to bool (if checkbox, comes as string 'true'/'false')
+    value = value in ['true', 'True', True, 1, '1']
+    if field not in ["is_approved", "is_onboarded"]:
+        return JsonResponse({"success": False, "error": "Invalid field"}, status=400)
+    try:
+        startup = StartupProfile.objects.get(pk=sid)
+        setattr(startup, field, value)
+        # Logic: Disapproving also disables onboarded
+        if field == "is_approved" and not value:
+            startup.is_onboarded = False
+        startup.save()
+        return JsonResponse({"success": True})
+    except StartupProfile.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Not found"}, status=404)
 
 @login_required
 def onboarding_view(request):

@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; margin: 0; }
+        body { font-family: 'Inter', sans-serif; background: #f8f9fb; color: #181b2a; height: 100vh;}
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 285px;
+            background: #fff;
+            border-right: 1.5px solid #e3e5e8;
+            padding: 0; position: relative;
+            overflow-y: auto;
+        }
+        .sidebar .logo-box {
+            padding: 30px 26px 8px 26px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .sidebar .logo-circle { 
+            width: 36px; height: 36px; border: 2.5px solid #22284b; border-radius: 50%; 
+            background: #fff; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 22px; color: #22284b;
+        }
+        .sidebar-title { font-weight: 700; font-size: 1.35rem; color: #22334d; margin-bottom: 7px;}
+        .sidebar-subtitle { font-size: 13px; color: #757a8a; margin-bottom: 15px;}
+        .sidebar-nav { padding: 0; margin: 0 0 30px 0; list-style: none;}
+        .sidebar-link, .sidebar-toggle {
+            display: flex; align-items: center; gap: 8px; padding: 13px 28px;
+            color: #10182e; text-decoration: none; font-weight: 600; font-size: 1.02rem;
+            border: none; background: none; cursor: pointer; width: 100%; outline: none;
+            transition: background .11s, color .13s;
+        }
+        .sidebar-link.active, .sidebar-toggle.active {
+            background: #f0f6fa;
+            color: #1a52a4;
+            border-right: 4px solid #1a52a4;
+            border-radius: 0 16px 16px 0;
+        }
+        .sidebar-toggle .arrow {
+            margin-left: auto;
+            transition: transform .14s;
+        }
+        .sidebar-toggle[aria-expanded="true"] .arrow { transform: rotate(90deg);}
+        .sidebar-subnav {
+            list-style: none; padding: 0; margin: 0;
+            background: #f9fbfd;
+        }
+        .sidebar-subnav li {
+            padding-left: 16px;
+        }
+        .sidebar-subnav .sidebar-link {
+            font-weight: 500; font-size: 0.98rem; color: #5d6473;
+            padding: 11px 22px;
+        }
+        .sidebar-subnav .sidebar-link.active {
+            background: #e9f0f8;
+            color: #10408a;
+            border-right: 3px solid #2254d6;
+        }
+        .sidebar-footer {
+            position: absolute; left: 0; bottom: 0; width: 100%; padding: 19px 24px 21px 30px;
+            border-top: 1px solid #ececec; background: #f6fafd; display: flex; align-items: center;
+            gap: 13px; cursor: pointer;
+        }
+        .sidebar-footer-circle {
+            width: 38px; height: 38px; border-radius: 50%; background: #22334d;
+            color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px;
+            font-weight: 700;
+        }
+        .sidebar-footer-details {
+            display: flex; flex-direction: column; gap: 1px;
+        }
+        .sidebar-footer-details span { font-size: 14px; color: #191f3d;}
+        .sidebar-footer-details small { font-size: 12px; color: #888;}
+        .main-content { flex: 1; padding: 38px 54px 44px 52px; }
+
+        #logout-dropdown a {
+            display: block;
+            padding: 15px 18px;
+            color: #2d334a;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: background 0.1s, color 0.1s;
+        }
+        #logout-dropdown a:hover {
+            background: #f0f6fa;
+            color: #0c2c64;
+        }
+        #logout-dropdown {
+            display: none;
+            position: absolute;
+            bottom: 65px;
+            left: 18px;
+            width: 155px;
+            background: #fff;
+            box-shadow: 0 2px 16px #191b1f19;
+            border-radius: 10px;
+            z-index: 30;
+        }
+        /* Scrollbar Styling */
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #e8eaec; border-radius: 12px;}
+    </style>
+    <script>
+        // Collapsible sidebar JS
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.sidebar-toggle').forEach(function(toggle) {
+                toggle.addEventListener('click', function() {
+                    var nav = toggle.nextElementSibling;
+                    var expanded = toggle.getAttribute('aria-expanded') === 'true';
+                    toggle.setAttribute('aria-expanded', String(!expanded));
+                    nav.style.display = expanded ? 'none' : 'block';
+                });
+            });
+
+            // Sidebar user dropdown (Logout)
+            const footer = document.getElementById('sidebar-footer');
+            const dropdown = document.getElementById('logout-dropdown');
+            let isOpen = false;
+            if (footer && dropdown) {
+                footer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.style.display = isOpen ? 'none' : 'block';
+                    isOpen = !isOpen;
+                });
+                document.body.addEventListener('click', function() {
+                    dropdown.style.display = 'none';
+                    isOpen = false;
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+<div class="layout">
+    <nav class="sidebar">
+        <div class="logo-box">
+            <div class="logo-circle"></div>
+            <div>
+                <div class="sidebar-title">Acme Inc</div>
+                <div class="sidebar-subtitle">Enterprise</div>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="{% url 'admin_dashboard' %}" class="sidebar-link {% if section == 'dashboard' %}active{% endif %}">Dashboard</a>
+            </li>
+            <!-- PLATFORM SECTION -->
+            <li>
+                <button class="sidebar-toggle {% if section == 'user_mgmt' %}active{% endif %}" aria-expanded="false" type="button">
+                    User Management
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="{% url 'admin_users' %}" class="sidebar-link {% if subsection == 'admin_users' %}active{% endif %}">Admin Users</a></li>
+                    <li><a href="{% url 'startup_users' %}" class="sidebar-link {% if subsection == 'startup_users' %}active{% endif %}">Startup Users</a></li>
+                    <li><a href="#" class="sidebar-link {% if subsection == 'investor_users' %}active{% endif %}">Investor Users</a></li>
+                    <li><a href="#" class="sidebar-link {% if subsection == 'role_permissions' %}active{% endif %}">Role Permissions</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Platform Analytics
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="#" class="sidebar-link">Revenue Metrics</a></li>
+                    <li><a href="#" class="sidebar-link">System Health</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Company Management
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="#" class="sidebar-link">All Companies Overview</a></li>
+                    <li><a href="#" class="sidebar-link">Company Verification</a></li>
+                    <li><a href="#" class="sidebar-link">Performance Metrics</a></li>
+                    <li><a href="#" class="sidebar-link">Support Tickets</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Analytics & Reports
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="#" class="sidebar-link">Platform Usage</a></li>
+                    <li><a href="#" class="sidebar-link">Revenue Reports</a></li>
+                    <li><a href="#" class="sidebar-link">Growth Metrics</a></li>
+                    <li><a href="#" class="sidebar-link">Custom Reports</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Settings
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="#" class="sidebar-link">Platform Configuration</a></li>
+                    <li><a href="#" class="sidebar-link">Billing Settings</a></li>
+                    <li><a href="#" class="sidebar-link">Security Settings</a></li>
+                    <li><a href="#" class="sidebar-link">API Management</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="sidebar-footer" id="sidebar-footer">
+            <div class="sidebar-footer-circle">
+                {{ request.user.first_name|default:"N"|slice:":1"|upper }}
+            </div>
+            <div class="sidebar-footer-details">
+                <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+                <small>Admin</small>
+            </div>
+            <div id="logout-dropdown">
+                <a href="{% url 'logout' %}">Log out</a>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>

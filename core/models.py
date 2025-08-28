@@ -54,6 +54,7 @@ class StartupProfile(models.Model):
 
     # --- Approval / Admin ---
     is_approved = models.BooleanField(default=False)
+    is_onboarded = models.BooleanField(default=False)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
