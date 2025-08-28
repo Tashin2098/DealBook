@@ -9,6 +9,10 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .models import StartupProfile
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+
+from .models import StartupProfile,InvestorProfile
+
+
 @api_view(['GET'])
 def hello_world(request):
     return Response({"message": "Hello, DealBook API!"})
@@ -63,6 +67,11 @@ def post_login_view(request):
     if hasattr(user, 'startup_profile'):
         # They already completed startup onboarding, show approval page
         return redirect('startup_onboard_complete')
+    
+    # --- Check for Investor Onboarding ---
+    if hasattr(user, 'investor_profile'):
+        return redirect('investor_onboard_complete')
+    
     else:
         # Not completed onboarding, send to onboarding
         return redirect('onboarding')
@@ -215,3 +224,54 @@ def startup_onboard_complete(request):
         "company_name": company_name,
     }
     return render(request, "onboarding_complete.html", context)
+
+
+# ---------------- INVESTOR ONBOARDING FORM ----------------
+@login_required
+def investor_onboard(request):
+    fields = [
+        'company', 'linkedin',
+        'hear_about', 'experience', 'industries',
+        'investment_range', 'newsletter', 'comments'
+    ]
+
+    onboard_data = request.session.get('investor_data', {})
+
+    if request.method == "POST":
+        data = {f: request.POST.get(f, '').strip() for f in fields}
+
+        # Handle checkboxes (lookingFor[] in HTML)
+        looking_for = request.POST.getlist('lookingFor')
+        data['looking_for'] = looking_for
+
+        # Validation: required fields
+        required_fields = ['hear_about', 'experience', 'industries', 'investment_range', 'newsletter']
+        if any(not data.get(f) for f in required_fields):
+            messages.error(request, "Please fill all required fields.")
+            return render(request, "investor_onboarding_form.html", {**onboard_data, **data})
+
+        # Save to session
+        onboard_data.update(data)
+        request.session['investor_data'] = onboard_data
+
+        # Save to DB (create or update profile)
+        InvestorProfile.objects.update_or_create(
+            user=request.user,
+            defaults=onboard_data
+        )
+
+
+        return redirect("investor_onboard_complete")
+
+    return render(request, "investor_onboarding_form.html", onboard_data)
+
+@login_required
+def investor_onboard_complete(request):
+    profile = InvestorProfile.objects.filter(user=request.user).first()
+    is_approved = profile.is_approved if profile else False
+    user_name = request.user.first_name
+    context = {
+        "is_approved": is_approved,
+        "user_name": user_name,
+    }
+    return render(request, "investor_onboarding_complete.html", context)
