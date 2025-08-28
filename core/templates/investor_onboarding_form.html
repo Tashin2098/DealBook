@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -259,161 +260,114 @@
         <div class="scroll-container">
             <h1>Complete your onboarding</h1>
             
-            <form id="investorForm">
-                <div class="section-header">Investor Onboarding</div>
-                <div class="section-subtitle">Step 1 of 1: Invest in the Future of Innovation</div>
-                
-                <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="john@example.com" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="company">Company Name (if applicable)</label>
-                    <input type="text" id="company" name="company" placeholder="Acme Capital">
-                </div>
-                
-                <div class="form-group">
-                    <label for="linkedin">LinkedIn Profile or Website</label>
-                    <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username">
-                </div>
-                
-                <div class="form-group">
-                    <label for="hearAbout">How did you hear about Diamond AI?</label>
-                    <select id="hearAbout" name="hearAbout" required>
-                        <option value="">Select an option</option>
-                        <option value="social-media">Social Media</option>
-                        <option value="referral">Referral</option>
-                        <option value="search">Search Engine</option>
-                        <option value="event">Event/Conference</option>
-                        <option value="press">Press/Media</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="experience">Investment Experience</label>
-                    <select id="experience" name="experience" required>
-                        <option value="">Select an option</option>
-                        <option value="angel">Angel Investor</option>
-                        <option value="vc">Venture Capitalist</option>
-                        <option value="corporate">Corporate Investor</option>
-                        <option value="private-equity">Private Equity</option>
-                        <option value="first-time">First-time Investor</option>
-                        <option value="other">Other...</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="industries">Industries of Interest</label>
-                    <input type="text" id="industries" name="industries" placeholder="AI, Fintech, Health" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="investmentRange">Typical Investment Range</label>
-                    <select id="investmentRange" name="investmentRange" required>
-                        <option value="">Select range</option>
-                        <option value="below-50k">Below $50K</option>
-                        <option value="50k-100k">$50K - $100K</option>
-                        <option value="100k-500k">$100K - $500K</option>
-                        <option value="500k-1m">$500K - $1M</option>
-                        <option value="1m-5m">$1M - $5M</option>
-                        <option value="above-5m">Above $5M</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>You are looking for:</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="early-stage" name="lookingFor" value="early-stage">
-                            <label for="early-stage">Early-stage startups</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="growth-stage" name="lookingFor" value="growth-stage">
-                            <label for="growth-stage">Growth-stage startups</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="strategic" name="lookingFor" value="strategic">
-                            <label for="strategic">Strategic partnerships</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="co-investment" name="lookingFor" value="co-investment">
-                            <label for="co-investment">Co-investment opportunities</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="other-looking" name="lookingFor" value="other">
-                            <label for="other-looking">Other...</label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="newsletter">Would you like to receive curated startup investment opportunities from Diamond AI?</label>
-                    <select id="newsletter" name="newsletter" required>
-                        <option value="">Select option</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="comments">Additional Comments or Questions</label>
-                    <textarea id="comments" name="comments" placeholder="Your message"></textarea>
-                </div>
-                
-                <div class="button-container">
-                    <button type="button" class="btn btn-secondary" onclick="goBack()">Back</button>
-                    <button type="submit" class="btn btn-primary">Finish</button>
-                </div>
-            </form>
+            <form id="investorForm" method="POST" action="{% url 'investor_onboard' %}">
+    {% csrf_token %}
+    <div class="section-header">Investor Onboarding</div>
+    <div class="section-subtitle">Step 1 of 1: Invest in the Future of Innovation</div>              
+
+    <div class="form-group">
+        <label for="company">Company Name (if applicable)</label>
+        <input type="text" id="company" name="company" placeholder="Acme Capital">
+    </div>
+
+    <div class="form-group">
+        <label for="linkedin">LinkedIn Profile or Website</label>
+        <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username">
+    </div>
+
+    <div class="form-group">
+        <label for="hear_about">How did you hear about Diamond AI?</label>
+        <select id="hear_about" name="hear_about" required>
+            <option value="">Select an option</option>
+            <option value="social-media">Social Media</option>
+            <option value="referral">Referral</option>
+            <option value="search">Search Engine</option>
+            <option value="event">Event/Conference</option>
+            <option value="press">Press/Media</option>
+            <option value="other">Other</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="experience">Investment Experience</label>
+        <select id="experience" name="experience" required>
+            <option value="">Select an option</option>
+            <option value="angel">Angel Investor</option>
+            <option value="vc">Venture Capitalist</option>
+            <option value="corporate">Corporate Investor</option>
+            <option value="private-equity">Private Equity</option>
+            <option value="first-time">First-time Investor</option>
+            <option value="other">Other...</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="industries">Industries of Interest</label>
+        <input type="text" id="industries" name="industries" placeholder="AI, Fintech, Health" required>
+    </div>
+
+    <div class="form-group">
+        <label for="investment_range">Typical Investment Range</label>
+        <select id="investment_range" name="investment_range" required>
+            <option value="">Select range</option>
+            <option value="below-50k">Below $50K</option>
+            <option value="50k-100k">$50K - $100K</option>
+            <option value="100k-500k">$100K - $500K</option>
+            <option value="500k-1m">$500K - $1M</option>
+            <option value="1m-5m">$1M - $5M</option>
+            <option value="above-5m">Above $5M</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>You are looking for:</label>
+        <div class="checkbox-group">
+            <div class="checkbox-item">
+                <input type="checkbox" id="early-stage" name="lookingFor" value="early-stage">
+                <label for="early-stage">Early-stage startups</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="growth-stage" name="lookingFor" value="growth-stage">
+                <label for="growth-stage">Growth-stage startups</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="strategic" name="lookingFor" value="strategic">
+                <label for="strategic">Strategic partnerships</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="co-investment" name="lookingFor" value="co-investment">
+                <label for="co-investment">Co-investment opportunities</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="other-looking" name="lookingFor" value="other">
+                <label for="other-looking">Other...</label>
+            </div>
         </div>
     </div>
 
-    <script>
-        function goBack() {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                // Fallback if no history
-                window.location.href = '/';
-            }
-        }
+    <div class="form-group">
+        <label for="newsletter">Would you like to receive curated startup investment opportunities from Diamond AI?</label>
+        <select id="newsletter" name="newsletter" required>
+            <option value="">Select option</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+    </div>
 
-        document.getElementById('investorForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = new FormData(this);
-            const data = {};
-            
-            // Handle regular form fields
-            for (let [key, value] of formData.entries()) {
-                if (key === 'lookingFor') {
-                    if (!data[key]) data[key] = [];
-                    data[key].push(value);
-                } else {
-                    data[key] = value;
-                }
-            }
-            
-            // Handle checkboxes that weren't checked
-            const checkboxes = this.querySelectorAll('input[type="checkbox"]');
-            const checkedValues = data.lookingFor || [];
-            data.lookingFor = checkedValues;
-            
-            console.log('Form submitted with data:', data);
-            
-            // Here you would typically send the data to your server
-            // For now, just show a success message
-            alert('Thank you for completing the onboarding! Your information has been submitted.');
-        });
-    </script>
+    <div class="form-group">
+        <label for="comments">Additional Comments or Questions</label>
+        <textarea id="comments" name="comments" placeholder="Your message"></textarea>
+    </div>
+
+    <div class="button-container">
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'onboarding' %}'">Back</button>
+        <button type="submit" class="btn btn-primary">Finish</button>
+    </div>
+</form>
+        </div>
+    </div>
+
+    
 </body>
 
 </html>

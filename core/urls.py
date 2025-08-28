@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import hello_world, homepage, login_view, signup_view, post_login_view, admin_dashboard, onboarding_view, investor_onboarding, startup_onboard_step1, startup_onboard_step2, startup_onboard_step3, startup_onboard_step4, startup_onboard_step5, startup_onboard_complete
+from .views import hello_world, homepage, login_view, signup_view, post_login_view, admin_dashboard, onboarding_view, investor_onboarding,investor_onboard,investor_onboard_complete, startup_onboard_step1, startup_onboard_step2, startup_onboard_step3, startup_onboard_step4, startup_onboard_step5, startup_onboard_complete
 
 urlpatterns = [
     path('hello/', hello_world),
@@ -12,6 +12,8 @@ urlpatterns = [
     path('admin-dashboard/', admin_dashboard, name='admin_dashboard'),
     path('onboarding/', onboarding_view, name='onboarding'),
     path("onboarding/investor/", investor_onboarding, name="investor_onboarding"),
+    path("onboarding/investor/onboard/", investor_onboard, name="investor_onboard"),
+    path("onboarding/investor/complete/", investor_onboard_complete, name="investor_onboard_complete"),
 
     path('onboarding/startup/step1/', startup_onboard_step1, name='onboard_step1'),
     path('onboarding/startup/step2/', startup_onboard_step2, name='onboard_step2'),
