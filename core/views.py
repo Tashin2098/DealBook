@@ -82,12 +82,22 @@ def admin_dashboard(request):
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def admin_users_view(request):
     users = User.objects.all().order_by('-date_joined')
-    return render(request, "admin_users.html", {"users": users})
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "admin_partials/admin_users_partial.html", {"users": users})
+    else:
+        # return full page with sidebar
+        return render(request, "admin_users.html", {"users": users})
 
 @staff_member_required
 def startup_users_admin(request):
     startups = StartupProfile.objects.all().select_related('user').order_by('-submitted_at')
-    return render(request, 'admin_startup_users.html', {
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "admin_partials/admin_startup_users_partial.html", {"startups": startups})
+    else:
+        # return full page with sidebar
+        return render(request, 'admin_startup_users.html', {
         'startups': startups
     })
 

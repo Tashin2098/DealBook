@@ -1,130 +1,870 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diamond AI DealBook</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-</head>
+    <style>
+        :root {
+            --primary: #000;
+            --primary-light: #333;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --background: #0a0a0b;
+            --surface: rgba(255, 255, 255, 0.05);
+            --surface-light: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-muted: #666;
+            --border: rgba(255, 255, 255, 0.1);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--background);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(600px circle at 20% 30%, rgba(120, 119, 198, 0.3), transparent 40%),
+                radial-gradient(800px circle at 80% 70%, rgba(255, 119, 198, 0.15), transparent 40%),
+                radial-gradient(600px circle at 40% 80%, rgba(120, 219, 255, 0.1), transparent 40%);
+            animation: bgMove 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-20px, -20px) scale(1.05); }
+        }
+
+        /* Glassmorphism utilities */
+        .glass {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+        }
+
+        .glass-light {
+            background: var(--surface-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+        }
+
+        /* Fade in animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .fade-in-delay-1 { animation-delay: 0.1s; }
+        .fade-in-delay-2 { animation-delay: 0.2s; }
+        .fade-in-delay-3 { animation-delay: 0.3s; }
+        .fade-in-delay-4 { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Floating elements */
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .float-delay { animation-delay: -3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Header */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(10, 10, 11, 0.8);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(10, 10, 11, 0.95);
+            border-bottom-color: var(--accent);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6); }
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-actions a:not(.btn) {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .header-actions a:not(.btn):hover {
+            color: var(--text-primary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn.primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn.secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+        }
+
+        .btn.secondary:hover {
+            background: var(--surface-light);
+            transform: translateY(-2px);
+        }
+
+        .btn.disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 8rem 0 4rem 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .incubator-label {
+            display: inline-block;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .incubator-label::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: var(--gradient-primary);
+            border-radius: 30px;
+            z-index: -1;
+            opacity: 0.3;
+            animation: borderGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.6; }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero-link {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .hero-link a {
+            color: var(--accent-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .hero-link a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .particle-1 { top: 20%; left: 10%; animation: float 8s ease-in-out infinite; }
+        .particle-2 { top: 60%; right: 15%; animation: float 6s ease-in-out infinite reverse; }
+        .particle-3 { bottom: 30%; left: 20%; animation: float 10s ease-in-out infinite; }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 2rem 0 4rem 0;
+            flex-wrap: wrap;
+        }
+
+        .category-tag {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-tag:hover {
+            background: var(--surface-light);
+            color: var(--text-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Feature Cards */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            background: var(--surface-light);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--accent-light);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Split Section */
+        .split-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding: 4rem 0;
+        }
+
+        .split-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .split-card:hover {
+            background: var(--surface-light);
+            transform: scale(1.02);
+        }
+
+        .split-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .split-card .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .split-card ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .split-card li {
+            padding: 0.8rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 2rem;
+            font-size: 1rem;
+        }
+
+        .split-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent-light);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .testimonial-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            background: var(--surface-light);
+            transform: translateY(-5px);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 1rem;
+            left: 2rem;
+            font-size: 4rem;
+            color: var(--accent);
+            opacity: 0.3;
+            font-family: serif;
+        }
+
+        .testimonial-card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .testimonial-card p {
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-card small {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 4rem 3rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 4rem 0;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: var(--gradient-primary);
+            opacity: 0.1;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .cta-section * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            margin-top: 4rem;
+        }
+
+        footer nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        footer nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer nav a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons, .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .split-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .categories {
+                gap: 1rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            main {
+                padding: 0 1rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .split-card, .feature-card, .testimonial-card {
+                padding: 2rem;
+            }
+        }
+
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
 <body>
-    <header class="navbar">
-        <div class="logo">
+    <div class="animated-bg"></div>
+    
+    <header class="navbar" id="navbar">
+        <div class="logo fade-in">
             <div class="logo-icon">◊</div>
             <span>Diamond AI DealBook</span>
         </div>
-        <div class="header-actions">
+        <div class="header-actions fade-in fade-in-delay-1">
             <a href="/login/">Log in</a>
-            <a class="btn black" href="/app/">Launch App →</a>
+            <a class="btn primary" href="/login/">Launch App →</a>
         </div>
     </header>
 
     <main>
-        <div class="center-content">
-            <span class="incubator-label">UAE-based Incubator</span>
-            <h1>Connecting bold startups<br>with investors, the smart way</h1>
-            <p class="desc">
+        <section class="hero">
+            <div class="particle particle-1"></div>
+            <div class="particle particle-2"></div>
+            <div class="particle particle-3"></div>
+            
+            <span class="incubator-label fade-in fade-in-delay-1">UAE-based Incubator</span>
+            <h1 class="fade-in fade-in-delay-2">Connecting bold startups<br>with investors, the smart way</h1>
+            <p class="hero-desc fade-in fade-in-delay-3">
                 DealBook is the curated platform by Diamond AI for our founders and investors to discover opportunities,
                 manage diligence, and close rounds faster.
             </p>
-            <div class="hero-buttons">
-                <a class="btn black" href="/explore/">Explore DealBook →</a>
-                <a class="btn" href="/login/">Join as Startup / Investor</a>
+            <div class="hero-buttons fade-in fade-in-delay-4">
+                <a class="btn primary" href="#explore">Explore DealBook →</a>
+                <a class="btn secondary" href="#join">Join as Startup / Investor</a>
             </div>
-            <p class="small"><a href="https://diamondai.tech">Learn more at diamondai.tech</a></p>
-        </div>
+            <p class="hero-link fade-in fade-in-delay-4">
+                <a href="https://diamondai.tech">Learn more at diamondai.tech</a>
+            </p>
+        </section>
 
-        <!-- Categories -->
-        <div class="category-row">
-            <span>Fintech</span>
-            <span>AI</span>
-            <span>Health</span>
-            <span>Mobility</span>
-            <span>PropTech</span>
-            <span>Climate</span>
-        </div>
+        <section class="categories scroll-reveal">
+            <div class="category-tag float">Fintech</div>
+            <div class="category-tag float float-delay">AI</div>
+            <div class="category-tag float">Health</div>
+            <div class="category-tag float float-delay">Mobility</div>
+            <div class="category-tag float">PropTech</div>
+            <div class="category-tag float float-delay">Climate</div>
+        </section>
 
-        <!-- Feature Cards -->
-        <div class="cards-section">
-            <div class="card">
-                <strong><i class=" fas fa-shield-alt"></i>&nbsp;Curated & verified</strong>
-                <p>Access a vetted pipeline of UAE startups and investor profiles. We review each portfolio company and
-                    investor to ensure quality and fit.</p>
+        <section class="features scroll-reveal">
+            <div class="feature-card">
+                <i class="fas fa-shield-alt feature-icon"></i>
+                <h3>Curated & verified</h3>
+                <p>Access a vetted pipeline of UAE startups and investor profiles. We review each portfolio company and investor to ensure quality and fit.</p>
             </div>
-            <div class="card">
-                <strong><i class="fas fa-chart-line"></i>&nbsp;Deal workflow</strong>
-                <p>From intro to diligence to closing—organized in one place. Keep data rooms, Q&A, and documents
-                    streamlined and searchable.</p>
+            <div class="feature-card">
+                <i class="fas fa-chart-line feature-icon"></i>
+                <h3>Deal workflow</h3>
+                <p>From intro to diligence to closing—organized in one place. Keep data rooms, Q&A, and documents streamlined and searchable.</p>
             </div>
-            <div class="card">
-                <strong><i class="fas fa-users"></i>&nbsp;Community support</strong>
-                <p>Leverage Diamond AI's network, mentorship, and events. We bring founders and investors together
-                    across the UAE and beyond.</p>
+            <div class="feature-card">
+                <i class="fas fa-users feature-icon"></i>
+                <h3>Community support</h3>
+                <p>Leverage Diamond AI's network, mentorship, and events. We bring founders and investors together across the UAE and beyond.</p>
             </div>
-        </div>
+        </section>
 
-        <!-- For Startups & Investors -->
-        <div class="split-section">
+        <section class="split-section scroll-reveal">
             <div class="split-card">
-                <strong><i class="fas fa-regular fa-building"></i>&nbsp;For Startups</strong>
-                <p style="color: #666; margin-bottom: 1rem;">Showcase traction and raise smarter capital.</p>
+                <h3><i class="fas fa-building"></i>&nbsp;For Startups</h3>
+                <p class="subtitle">Showcase traction and raise smarter capital.</p>
                 <ul>
                     <li>Investor-matched visibility</li>
                     <li>Unified data room & Q&A</li>
                     <li>Warm intros via Diamond AI</li>
                 </ul>
-                <a class="btn black" href="/login/">Apply to list</a>
+                <a class="btn primary" href="#apply">Apply to list</a>
             </div>
             <div class="split-card">
-                <strong><i class="fas fa-users"></i>&nbsp;For Investors</strong>
-                <p style="color: #666; margin-bottom: 1rem;">Discover curated UAE opportunities.</p>
+                <h3><i class="fas fa-users"></i>&nbsp;For Investors</h3>
+                <p class="subtitle">Discover curated UAE opportunities.</p>
                 <ul>
                     <li>Vetted deal flow</li>
                     <li>Structured diligence</li>
                     <li>Direct founder access</li>
                 </ul>
-                <a class="btn" href="/request/">Request access</a>
+                <a class="btn secondary" href="#request">Request access</a>
             </div>
-        </div>
+        </section>
 
-        <!-- Testimonials -->
-        <div class="testimonials">
+        <section class="testimonials scroll-reveal">
             <div class="testimonial-card">
-                <strong>Founder testimonial</strong>
-                <p>"DealBook streamlined our raise and got us in front of the right investors."<br><small>— Portfolio
-                        Company, UAE</small></p>
+                <h4>Founder testimonial</h4>
+                <p>DealBook streamlined our raise and got us in front of the right investors. The platform made everything so much more efficient.</p>
+                <small>— Portfolio Company, UAE</small>
             </div>
             <div class="testimonial-card">
-                <strong>Founder testimonial</strong>
-                <p>"DealBook streamlined our raise and got us in front of the right investors."<br><small>— Portfolio
-                        Company, UAE</small></p>
+                <h4>Investor testimonial</h4>
+                <p>The quality of deals and the streamlined process has made our investment decisions much more informed and faster.</p>
+                <small>— Early Stage Fund, Dubai</small>
             </div>
             <div class="testimonial-card">
-                <strong>Founder testimonial</strong>
-                <p>"DealBook streamlined our raise and got us in front of the right investors."<br><small>— Portfolio
-                        Company, UAE</small></p>
+                <h4>Startup testimonial</h4>
+                <p>Diamond AI's network and platform helped us connect with investors who truly understood our vision and market.</p>
+                <small>— Tech Startup, Abu Dhabi</small>
             </div>
-        </div>
+        </section>
 
-        <!-- Call to Action -->
-        <div class="cta-banner">
+        <section class="cta-section scroll-reveal">
             <h2>Ready to explore the Diamond AI DealBook?</h2>
             <p>Join as a startup or investor and connect with our community.</p>
-            <a class="btn black" href="/login/">Launch App →</a>
-            <a class="btn disabled" href="#">Get access</a>
-        </div>
+            <div class="cta-buttons">
+                <a class="btn primary" href="#launch">Launch App →</a>
+                <a class="btn secondary" href="#access">Get access</a>
+            </div>
+        </section>
     </main>
 
     <footer>
         <span>© 2025 Diamond AI — UAE</span>
         <nav>
-            <a href="/">Website</a>
+            <a href="https://www.diamondai.tech/">Website</a>
             <a href="/login/">Log in</a>
         </nav>
     </footer>
-</body>
 
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth parallax effect for background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            document.querySelector('.animated-bg::before') && 
+            document.documentElement.style.setProperty('--bg-offset', `${rate}px`);
+        });
+
+        // Add click handlers for interactive elements
+        document.querySelectorAll('.category-tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                tag.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    tag.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
 </html>
