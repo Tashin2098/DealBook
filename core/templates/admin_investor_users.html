@@ -1,0 +1,119 @@
+{% extends "admin_base.html" %}
+{% load static %}
+{% load startup_extras %}
+
+{% block title %}Investor Users{% endblock %}
+
+{% block content %}
+<h2 style="font-size: 2rem; font-weight: 700;">Investor Users</h2>
+<table style="width: 100%; background:#fff; border-radius:18px; box-shadow: 0 3px 16px #e2e7ee2a; border-collapse:separate; border-spacing:0; overflow: hidden;">
+    <thead>
+        <tr style="font-weight:600; font-size:1.1rem; background: #f9fafb;">
+            <th style="padding:14px 18px;">Name</th>
+            <th style="padding:14px 18px;">Email</th>
+            <th>Investment Range</th>
+            <th>Approved</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in investors %}
+        <tr style="border-bottom:1.5px solid #f1f1f5;">
+            <td style="padding:13px 18px;">{{ i.user.first_name }}</td>
+            <td style="padding:13px 18px;">{{ i.user.email }}</td>
+            <td style="padding:13px 18px;">{{ i.investment_range }}</td>
+            <td>
+                <label class="switch">
+                    <input type="checkbox" data-id="{{ i.id }}" data-field="is_approved" {% if i.is_approved %}checked{% endif %}>
+                    <span class="slider"></span>
+                </label>
+            </td>
+            <td>
+                <button class="btn view-details-btn" data-investor="{{ i|as_json|escapejs }}">View</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<!-- Switch style -->
+<style>
+.switch { position: relative; display: inline-block; width: 48px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #eee; border-radius: 24px; transition: .3s;
+}
+.slider:before {
+    position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: #fff; border-radius: 50%;
+    transition: .3s; box-shadow: 0 1px 6px #bbc;
+}
+input:checked + .slider { background-color: #328cff;}
+input:checked + .slider:before { transform: translateX(24px);}
+</style>
+<!-- Details Modal -->
+<div id="investorModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(34,34,40,0.25); z-index:100;">
+    <div id="investorModalBox" style="max-width:700px; margin: 40px auto; background:white; border-radius:18px; padding:38px; box-shadow:0 10px 40px #1113; overflow-y:auto; max-height:90vh; position:relative;">
+        <button onclick="closeInvestorModal()" style="position:absolute; top:20px; right:22px; font-size:24px; border:none; background:transparent; cursor:pointer;">&times;</button>
+        <div id="investorModalContent"></div>
+    </div>
+</div>
+<script>
+function closeInvestorModal() {
+    document.getElementById('investorModal').style.display = 'none';
+}
+document.addEventListener('DOMContentLoaded', function() {
+    // Details modal
+    document.querySelectorAll('.view-details-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            try {
+                const data = JSON.parse(this.dataset.investor);
+                let html = `
+                <h2 style="font-weight:700; margin-bottom:10px;">Investor Details</h2>
+                <hr style="margin-bottom:15px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 32px;">
+                    <span><b>Name</b></span> <span>${data.user_name}</span>
+                    <span><b>Email</b></span> <span>${data.user_email}</span>
+                    <span><b>Company</b></span> <span>${data.company||''}</span>
+                    <span><b>LinkedIn</b></span> <span>${data.linkedin||''}</span>
+                    <span><b>Heard About</b></span> <span>${data.hear_about||''}</span>
+                    <span><b>Experience</b></span> <span>${data.experience||''}</span>
+                    <span><b>Industries</b></span> <span>${data.industries||''}</span>
+                    <span><b>Investment Range</b></span> <span>${data.investment_range||''}</span>
+                    <span><b>Looking For</b></span> <span>${(data.looking_for||[]).join(', ')}</span>
+                    <span><b>Newsletter</b></span> <span>${data.newsletter||''}</span>
+                    <span><b>Comments</b></span> <span>${data.comments||''}</span>
+                </div>
+                `;
+                document.getElementById('investorModalContent').innerHTML = html;
+                document.getElementById('investorModal').style.display = 'block';
+            } catch (e) {
+                alert('Failed to parse details: ' + e);
+            }
+        });
+    });
+    // Approve toggle
+    document.querySelectorAll('input[type="checkbox"][data-field]').forEach(function(el) {
+        el.addEventListener('change', function() {
+            fetch("{% url 'toggle_investor_status' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: this.dataset.id,
+                    field: this.dataset.field,
+                    value: this.checked
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(!data.success) {
+                    alert("Failed to update: " + (data.error || ""));
+                    this.checked = !this.checked;
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "startup_base.html" %}
+{% block title %}Cap Table{% endblock %}
+
+{% block content %}
+<h1 style="font-weight:700;margin-bottom:22px;">Cap Table</h1>
+
+<!-- Pie Chart -->
+<div style="background:#fff;border-radius:14px;padding:28px;max-width:520px;box-shadow:0 2px 12px #eaeef2;margin-bottom:40px;">
+    <h2 style="margin-bottom:12px;font-size:1.08rem;font-weight:600;">Equity Ownership</h2>
+    <canvas id="capPieChart" width="380" height="200"></canvas>
+</div>
+
+<!-- Table -->
+<div style="background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 12px #eaeef2;max-width:520px;">
+    <table style="width:100%;border-collapse:collapse;">
+        <thead>
+            <tr style="font-size:1.05rem;color:#22334d;">
+                <th style="text-align:left;padding:8px;">Name</th>
+                <th style="text-align:right;padding:8px;">Shares</th>
+                <th style="text-align:right;padding:8px;">% Ownership</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for owner in cap_table %}
+            <tr>
+                <td style="padding:7px 8px;">{{ owner.name }}</td>
+                <td style="padding:7px 8px;text-align:right;">{{ owner.shares }}</td>
+                <td style="padding:7px 8px;text-align:right;">{{ owner.percent }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Chart.js PIE CHART -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const pieCtx = document.getElementById('capPieChart');
+new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+        labels: [{% for owner in cap_table %}'{{ owner.name }}',{% endfor %}],
+        datasets: [{
+            data: [{% for owner in cap_table %}{{ owner.percent }},{% endfor %}],
+            backgroundColor: ['#367cf7','#50e3c2','#ff6978','#ad56ff','#f6a844','#71d37b'],
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { position: 'right' } }
+    }
+});
+</script>
+{% endblock %}

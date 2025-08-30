@@ -1,0 +1,20 @@
+{% extends "startup_base.html" %}
+{% block title %}Fundraising Dashboard{% endblock %}
+{% block content %}
+<h1 style="font-weight:700; margin-bottom:30px;">Fundraising Dashboard</h1>
+<div style="display:flex; gap:34px; flex-wrap:wrap;">
+    <div style="background:#fff; border-radius:12px; box-shadow:0 1px 8px #eee; padding:28px 38px; flex:1; min-width:200px;">
+        <div style="color:#888;">Currently Raising</div>
+        <div style="font-size:2rem; font-weight:800; margin-top:10px;">${{ currently_raising|default:"0" }}</div>
+    </div>
+    <div style="background:#fff; border-radius:12px; box-shadow:0 1px 8px #eee; padding:28px 38px; flex:1; min-width:200px;">
+        <div style="color:#888;">Capital Raised</div>
+        <div style="font-size:2rem; font-weight:800; margin-top:10px;">${{ capital_raised|default:"0" }}</div>
+    </div>
+    <div style="background:#fff; border-radius:12px; box-shadow:0 1px 8px #eee; padding:28px 38px; flex:1; min-width:200px;">
+        <div style="color:#888;">Equity Offered</div>
+        <div style="font-size:2rem; font-weight:800; margin-top:10px;">{{ equity_offered|default:"0" }}%</div>
+    </div>
+</div>
+<!-- Future: Insert fundraising charts/graphs here -->
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "startup_base.html" %}
+{% load humanize %}
+{% block title %}Fundraising Status{% endblock %}
+{% block content %}
+<style>
+    .fundraise-card { background:#fff; border-radius:16px; box-shadow:0 2px 14px #eaeef2; padding:32px 38px 16px 38px; max-width: 600px;}
+    .fundraise-table { width:100%; border-collapse:separate; border-spacing:0 13px;}
+    .fundraise-table th, .fundraise-table td { text-align:left; padding:10px 12px; font-size:1.12rem;}
+    .fundraise-table th { color:#7a819a; font-weight:700;}
+    .fundraise-table td { color:#232845; font-weight:700;}
+</style>
+<h1 style="font-weight:700;margin-bottom:22px;">Fundraising Status</h1>
+<div class="fundraise-card">
+    <form method="POST" action="{% url 'startup_edit_fundraising_status' %}">
+        {% csrf_token %}
+        <table class="fundraise-table">
+            <tr>
+                <th>Currently Raising</th>
+                <td><input type="number" name="currently_raising" value="{{ profile.currently_raising|default_if_none:'' }}" step="0.01" style="width:160px"></td>
+            </tr>
+            <tr>
+                <th>Equity Offered</th>
+                <td><input type="number" name="equity_offered" value="{{ profile.equity_offered|default_if_none:'' }}" step="0.01" style="width:160px"></td>
+            </tr>
+            <tr>
+                <th>Capital Raised</th>
+                <td><input type="number" name="capital_raised" value="{{ profile.capital_raised|default_if_none:'' }}" step="0.01" style="width:160px"></td>
+            </tr>
+            <tr>
+                <th>Debt Obligations</th>
+                <td><input type="text" name="debt_obligations" value="{{ profile.debt_obligations|default_if_none:'' }}" style="width:160px"></td>
+            </tr>
+            <tr>
+                <th>External Funding</th>
+                <td><input type="text" name="external_funding" value="{{ profile.external_funding|default_if_none:'' }}" style="width:160px"></td>
+            </tr>
+        </table>
+        <button type="submit" class="edit-btn">Save Changes</button>
+    </form>
+</div>
+{% endblock %}
