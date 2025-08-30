@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Startup Dashboard{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; margin: 0; }
+        body { font-family: 'Inter', sans-serif; background: #fafbfc; color: #1a2340; }
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 300px; background: #fff; border-right: 1.5px solid #e3e5e8;
+            display: flex; flex-direction: column; height: 100vh; position: relative; overflow-y: auto;
+        }
+        .sidebar .logo-box {
+            display: flex; align-items: center; gap: 12px; padding: 28px 24px 10px 24px;
+        }
+        .sidebar .logo-icon {
+            font-size: 2.2rem; color: #22284b;
+        }
+        .sidebar-title { font-weight: 700; font-size: 1.3rem; color: #22334d;}
+        .sidebar-subtitle { font-size: 13px; color: #757a8a; }
+        .sidebar-nav { list-style: none; padding: 0; margin: 28px 0 0 0; flex: 1; }
+        .sidebar-link, .sidebar-toggle {
+            display: flex; align-items: center; padding: 14px 26px; gap: 10px;
+            color: #111a28; text-decoration: none; font-weight: 600; font-size: 1.05rem;
+            border: none; background: none; cursor: pointer; width: 100%; outline: none;
+            transition: background .12s, color .13s;
+        }
+        .sidebar-link.active, .sidebar-toggle.active {
+            background: #f4f7fb; color: #1952a3; border-right: 4px solid #1a52a4;
+            border-radius: 0 18px 18px 0;
+        }
+        .sidebar-toggle .arrow { margin-left: auto; transition: transform .13s; }
+        .sidebar-toggle[aria-expanded="true"] .arrow { transform: rotate(90deg);}
+        .sidebar-subnav { list-style: none; padding: 0; margin: 0; background: #f8fafd; }
+        .sidebar-subnav li { padding-left: 16px; }
+        .sidebar-subnav .sidebar-link {
+            font-weight: 500; font-size: 0.99rem; color: #525c6e; padding: 11px 18px;
+        }
+        .sidebar-subnav .sidebar-link.active {
+            background: #e9f1fa; color: #10408a; border-right: 3px solid #2254d6;
+        }
+        .sidebar-footer {
+            position: sticky; bottom: 0; left: 0; width: 100%; padding: 18px 18px 19px 22px;
+            border-top: 1px solid #ececec; background: #f6fafd; display: flex; align-items: center; gap: 13px;
+        }
+        .sidebar-footer-circle {
+            width: 36px; height: 36px; border-radius: 50%; background: #22334d;
+            color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700;
+        }
+        .sidebar-footer-details { display: flex; flex-direction: column; gap: 1px;}
+        .sidebar-footer-details span { font-size: 14px; color: #191f3d;}
+        .sidebar-footer-details small { font-size: 12px; color: #888;}
+        .main-content { flex: 1; padding: 38px 42px 44px 48px; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #e8eaec; border-radius: 12px;}
+        .arrow { font-size: 1.08em; }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.sidebar-toggle').forEach(function(toggle) {
+                toggle.addEventListener('click', function() {
+                    var nav = toggle.nextElementSibling;
+                    var expanded = toggle.getAttribute('aria-expanded') === 'true';
+                    toggle.setAttribute('aria-expanded', String(!expanded));
+                    nav.style.display = expanded ? 'none' : 'block';
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="layout">
+    <nav class="sidebar">
+        <div class="logo-box">
+            <span class="logo-icon">&#128188;</span>
+            <div>
+                <div class="sidebar-title">Acme Inc</div>
+                <div class="sidebar-subtitle">Enterprise</div>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="{% url 'startup_dashboard' %}" class="sidebar-link {% if section == 'dashboard' %}active{% endif %}">Dashboard</a>
+            </li>
+            <li>
+                <button class="sidebar-toggle {% if section == 'company' %}active{% endif %}" aria-expanded="false" type="button">
+                    Company Overview
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="{% url 'startup_company_overview' %}" class="sidebar-link {% if subsection == 'company_overview' %}active{% endif %}">Overview</a></li>
+                    <li><a href="{% url 'startup_financial_metrics' %}" class="sidebar-link {% if subsection == 'financial_metrics' %}active{% endif %}">Financial Metrics</a></li>
+                    <li><a href="{% url 'startup_fundraising_status' %}" class="sidebar-link {% if subsection == 'fundraising_status' %}active{% endif %}">Fundraising Status</a></li>
+                    <li><a href="#" class="sidebar-link {% if subsection == 'recent_activity' %}active{% endif %}">Recent Activity</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Fundraising
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="{% url 'startup_my_fundraise' %}" class="sidebar-link">My Fundraise</a></li>
+                    <li><a href="{% url 'startup_investor_outreach' %}" class="sidebar-link">Investor Outreach</a></li>
+                    <li><a href="{% url 'startup_fundraising_dashboard' %}" class="sidebar-link">Fundraising Dashboard</a></li>
+                    <li><a href="{% url 'startup_round_history' %}" class="sidebar-link">Round History</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Investment Readiness
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="{% url 'startup_valuation_financials' %}" class="sidebar-link">Valuation & Financials</a></li>
+                    <li><a href="#" class="sidebar-link">Key Metrics</a></li>
+                    <li><a href="{% url 'startup_cap_table' %}" class="sidebar-link">Cap Table</a></li>
+                    <li><a href="#" class="sidebar-link">Scenarios Modeling</a></li>
+                    <li><a href="#" class="sidebar-link">Pitch Deck Review</a></li>
+                    <li><a href="#" class="sidebar-link">Market Size Calculator</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Data Room
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="#" class="sidebar-link">My Documents</a></li>
+                    <li><a href="#" class="sidebar-link">E-Signature</a></li>
+                    <li><a href="#" class="sidebar-link">Document Analytics</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Reports
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="#" class="sidebar-link">Financial Reports</a></li>
+                    <li><a href="#" class="sidebar-link">Performance Reports</a></li>
+                    <li><a href="#" class="sidebar-link">Investor Reports</a></li>
+                </ul>
+            </li>
+            <li>
+                <button class="sidebar-toggle" aria-expanded="false" type="button">
+                    Settings
+                    <span class="arrow">&#9654;</span>
+                </button>
+                <ul class="sidebar-subnav" style="display: none;">
+                    <li><a href="#" class="sidebar-link">Company Profile</a></li>
+                    <li><a href="#" class="sidebar-link">Team Management</a></li>
+                    <li><a href="#" class="sidebar-link">Subscription</a></li>
+                    <li><a href="#" class="sidebar-link">Integrations</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-circle">{{ request.user.first_name|default:"N"|slice:":1" }}</div>
+            <div class="sidebar-footer-details">
+                <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+                <small>Startup</small>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+</body>
+</html>

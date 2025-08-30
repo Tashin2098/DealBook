@@ -1,0 +1,137 @@
+{% extends "startup_base.html" %}
+{% load humanize %}
+{% block title %}Startup Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .dash-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 32px;
+        margin-bottom: 42px;
+    }
+    .dash-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 18px 0 #e7ecf3;
+        padding: 28px 34px;
+        min-width: 180px;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: box-shadow .14s;
+        position: relative;
+    }
+    .dash-card .dash-label {
+        font-size: 1.06rem;
+        font-weight: 600;
+        color: #7a819a;
+        margin-bottom: 8px;
+        letter-spacing: .02em;
+    }
+    .dash-card .dash-value {
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: #222845;
+        line-height: 1.1;
+        word-break: break-word;
+    }
+    .dash-card .status-badge {
+        font-size: 1.28rem;
+        font-weight: 700;
+        color: #24c070;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 6px;
+    }
+    .dash-card .status-badge.danger { color: #e2585e; }
+    .dash-card .check {
+        font-size: 1.7rem;
+        vertical-align: middle;
+        margin-right: 3px;
+    }
+
+    /* Responsive: stack widgets + timeline side by side on desktop, vertical on mobile */
+    .dash-content-flex {
+        display: flex;
+        gap: 38px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    .activity-box {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 16px #eaeef2;
+        padding: 30px 28px 26px 28px;
+        min-width: 340px;
+        max-width: 410px;
+        width: 100%;
+    }
+    .activity-box h2 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 17px;
+    }
+    .activity-list {
+        list-style: none;
+        padding: 0; margin: 0;
+    }
+    .activity-list li {
+        margin-bottom: 21px;
+        padding-bottom: 14px;
+        border-bottom: 1.1px solid #f0f0f3;
+    }
+    .activity-list li:last-child { border-bottom: none; }
+    .activity-title { font-weight: 600; color: #22334d; margin-bottom: 2px;}
+    .activity-date { color: #8a91ad; font-size: 0.97rem;}
+    @media (max-width: 950px) {
+        .dash-content-flex { flex-direction: column; gap: 32px;}
+        .activity-box { max-width: 100%; }
+    }
+</style>
+
+<h1 style="font-weight: 700; margin-bottom: 32px;">Dashboard</h1>
+
+<div class="dash-content-flex">
+    <div style="flex:2;">
+        <div class="dash-cards-grid">
+            {% for label, value in widget_data.items %}
+                <div class="dash-card">
+                    <div class="dash-label">{{ label }}</div>
+                    <div class="dash-value">
+                        {% if label in "ARR ARPU Burn Cash Currently Raising Equity Offered" %}
+                            ${{ value|floatformat:2|intcomma }}
+                        {% elif label == "Approval" %}
+                            <span class="status-badge" style="color:#24c070;">
+                                <span class="check">✔️</span>
+                                Approved
+                            </span>
+                        {% elif label == "Onboarded" %}
+                            <span class="status-badge" style="color:#24c070;">
+                                <span class="check">✔️</span>
+                            </span>
+                        {% else %}
+                            {{ value }}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="activity-box">
+        <h2>Recent Activity</h2>
+        <ul class="activity-list">
+            {% for activity in activities %}
+                <li>
+                    <div class="activity-title">{{ activity.desc }}</div>
+                    <div class="activity-date">{{ activity.date|date:"M d, Y H:i" }}</div>
+                </li>
+            {% empty %}
+                <li>No activity yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

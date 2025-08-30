@@ -1,0 +1,33 @@
+{% extends "startup_base.html" %}
+{% block title %}Round History{% endblock %}
+{% block content %}
+<h1 style="font-weight:700; margin-bottom:30px;">Fundraising Round History</h1>
+<table style="width:100%; background:#fff; border-radius:14px; box-shadow:0 1px 8px #eee;">
+    <thead>
+        <tr style="background:#f7f9fc; font-weight:700;">
+            <th style="padding:12px 22px;">Round</th>
+            <th>Capital Raised</th>
+            <th>Equity Offered</th>
+            <th>Start Date</th>
+            <th>Pitch Deck</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in rounds %}
+        <tr>
+            <td style="padding:12px 22px;">{{ r.type }}</td>
+            <td>${{ r.capital_raised }}</td>
+            <td>{{ r.equity_offered }}%</td>
+            <td>{{ r.start_date|date:"M d, Y" }}</td>
+            <td>
+                {% if r.pitch_deck_url %}
+                    <a href="{{ r.pitch_deck_url }}" target="_blank" style="color:#1a52a4; font-weight:600;">View</a>
+                {% else %}
+                    <span style="color:#aaa;">Not Uploaded</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

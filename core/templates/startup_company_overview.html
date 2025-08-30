@@ -1,0 +1,92 @@
+{% extends "startup_base.html" %}
+{% block title %}Company Overview{% endblock %}
+
+{% block content %}
+<style>
+    .overview-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 14px #eaeef2;
+        padding: 32px 38px 24px 38px;
+        max-width: 690px;
+        margin-bottom: 38px;
+    }
+    .overview-row {
+        display: flex; flex-wrap: wrap;
+        gap: 48px 0;
+        margin-bottom: 16px;
+    }
+    .overview-label {
+        min-width: 170px;
+        font-size: 1.04rem;
+        font-weight: 600;
+        color: #7a819a;
+        margin-right: 12px;
+        margin-bottom: 9px;
+    }
+    .overview-value {
+        font-size: 1.22rem;
+        color: #1a2340;
+        font-weight: 600;
+        margin-bottom: 11px;
+        word-break: break-word;
+    }
+    .overview-desc {
+        margin-bottom: 17px;
+        color: #42506b;
+        font-size: 1.08rem;
+    }
+    .edit-btn {
+        background: #e9f0ff;
+        border-radius: 8px;
+        color: #184eaf;
+        font-weight: 600;
+        border: none;
+        padding: 6px 15px;
+        cursor: pointer;
+        margin-left: 13px;
+        font-size: 0.98rem;
+        transition: background .13s;
+    }
+    .edit-btn:hover {
+        background: #dae8ff;
+    }
+</style>
+<h1 style="font-weight: 700; margin-bottom: 24px;">Company Overview</h1>
+
+<div class="overview-card">
+    <div class="overview-row">
+        <div class="overview-label">Startup Name:</div>
+        <div class="overview-value">{{ profile.startup_name }}</div>
+    </div>
+    <div class="overview-row">
+        <div class="overview-label">Website:</div>
+        <div class="overview-value"><a href="{{ profile.website }}" target="_blank" style="color:#1854b4;text-decoration:underline;">{{ profile.website }}</a></div>
+    </div>
+    <div class="overview-row">
+        <div class="overview-label">Your Role:</div>
+        <div class="overview-value">{{ profile.role }}</div>
+    </div>
+    <div class="overview-row">
+        <div class="overview-label">Startup Stage:</div>
+        <div class="overview-value">{{ profile.startup_stage }}</div>
+    </div>
+    <div class="overview-row">
+        <div class="overview-label">Audience:</div>
+        <div class="overview-value">{{ profile.audience }}</div>
+    </div>
+    <div class="overview-row">
+        <div class="overview-label">Tech Component:</div>
+        <div class="overview-value">{{ profile.tech_component }}</div>
+    </div>
+    <div class="overview-row">
+        <div class="overview-label">Your Edge:</div>
+        <div class="overview-value">{{ profile.your_edge }}</div>
+    </div>
+    <div class="overview-row">
+        <div class="overview-label">Description:</div>
+        <div class="overview-desc">{{ profile.description }}</div>
+    </div>
+    <a href="{% url 'startup_edit_overview' %}" class="edit-btn">Edit Info</a>
+</div>
+{% endblock %}

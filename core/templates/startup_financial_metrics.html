@@ -1,0 +1,61 @@
+{% extends "startup_base.html" %}
+{% load humanize %}
+{% block title %}Financial Metrics{% endblock %}
+{% block content %}
+<style>
+    .metrics-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 14px #eaeef2;
+        padding: 28px 36px 18px 36px;
+        max-width: 730px;
+        margin-bottom: 32px;
+    }
+    .metrics-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 16px;
+    }
+    .metrics-table th, .metrics-table td {
+        text-align: left;
+        padding: 10px 14px;
+        font-size: 1.13rem;
+    }
+    .metrics-table th { color: #7a819a; font-weight: 700;}
+    .metrics-table td { color: #232845; font-weight: 700;}
+    .edit-btn { margin-left: 18px;}
+</style>
+<h1 style="font-weight: 700; margin-bottom: 22px;">Financial Metrics</h1>
+<div class="metrics-card">
+    <form method="POST" action="{% url 'startup_edit_financial_metrics' %}">
+        {% csrf_token %}
+        <table class="metrics-table">
+            <tr>
+                <th>ARR</th>
+                <td><input type="number" name="arr" value="{{ profile.arr|default_if_none:'' }}" step="0.01" class="form-control" style="width:180px;"></td>
+            </tr>
+            <tr>
+                <th>ARPU</th>
+                <td><input type="number" name="arpu" value="{{ profile.arpu|default_if_none:'' }}" step="0.01" class="form-control" style="width:180px;"></td>
+            </tr>
+            <tr>
+                <th>Burn</th>
+                <td><input type="number" name="monthly_burn" value="{{ profile.monthly_burn|default_if_none:'' }}" step="0.01" class="form-control" style="width:180px;"></td>
+            </tr>
+            <tr>
+                <th>Cash</th>
+                <td><input type="number" name="cash_balance" value="{{ profile.cash_balance|default_if_none:'' }}" step="0.01" class="form-control" style="width:180px;"></td>
+            </tr>
+            <tr>
+                <th>LTV:CAC</th>
+                <td><input type="number" name="ltv_cac_ratio" value="{{ profile.ltv_cac_ratio|default_if_none:'' }}" step="0.01" class="form-control" style="width:180px;"></td>
+            </tr>
+            <tr>
+                <th>Operating Expenses</th>
+                <td><input type="number" name="operating_expenses" value="{{ profile.operating_expenses|default_if_none:'' }}" step="0.01" class="form-control" style="width:180px;"></td>
+            </tr>
+        </table>
+        <button type="submit" class="edit-btn">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

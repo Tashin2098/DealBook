@@ -1,0 +1,71 @@
+{% extends "startup_base.html" %}
+{% block title %}Valuation & Financials{% endblock %}
+
+{% block content %}
+<h1 style="font-weight:700; margin-bottom:26px;">Valuation & Financials</h1>
+
+<!-- SUMMARY TABLE -->
+<table style="background:#fff;border-radius:14px;padding:30px;width:100%;max-width:580px;box-shadow:0 1.5px 8px #eaeef2;margin-bottom:32px;">
+    <tr><th style="text-align:left;">Metric</th><th style="text-align:right;">Value (USD)</th></tr>
+    <tr><td>Annual Recurring Revenue (ARR)</td><td style="text-align:right;">${{ profile.arr|floatformat:2 }}</td></tr>
+    <tr><td>Average Revenue Per User (ARPU)</td><td style="text-align:right;">${{ profile.arpu|floatformat:2 }}</td></tr>
+    <tr><td>Monthly Burn</td><td style="text-align:right;">${{ profile.monthly_burn|floatformat:2 }}</td></tr>
+    <tr><td>Cash Balance</td><td style="text-align:right;">${{ profile.cash_balance|floatformat:2 }}</td></tr>
+    <tr><td>LTV:CAC Ratio</td><td style="text-align:right;">{{ profile.ltv_cac_ratio|floatformat:2 }}</td></tr>
+    <tr><td>Operating Expenses</td><td style="text-align:right;">${{ profile.operating_expenses|floatformat:2 }}</td></tr>
+    <tr><td>Debt Obligations</td><td style="text-align:right;">{{ profile.debt_obligations|default:"—" }}</td></tr>
+    <tr><td>Capital Raised</td><td style="text-align:right;">${{ profile.capital_raised|floatformat:2 }}</td></tr>
+    <tr><td>Currently Raising</td><td style="text-align:right;">${{ profile.currently_raising|floatformat:2 }}</td></tr>
+    <tr><td>Equity Offered</td><td style="text-align:right;">{{ profile.equity_offered|floatformat:2 }}%</td></tr>
+</table>
+
+<!-- BAR CHART -->
+<div style="background:#fff;border-radius:14px;padding:28px;max-width:680px;box-shadow:0 2px 12px #eaeef2;">
+    <h2 style="margin-bottom:18px;font-size:1.2rem;font-weight:600;">Financials Snapshot</h2>
+    <canvas id="financialBarChart" width="610" height="260"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('financialBarChart');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [
+            'ARR', 'ARPU', 'Burn', 'Cash', 'Operating Expenses', 'Capital Raised', 'Currently Raising'
+        ],
+        datasets: [{
+            label: 'Amount (USD)',
+            data: [
+                {{ profile.arr|default:"0" }},
+                {{ profile.arpu|default:"0" }},
+                {{ profile.monthly_burn|default:"0" }},
+                {{ profile.cash_balance|default:"0" }},
+                {{ profile.operating_expenses|default:"0" }},
+                {{ profile.capital_raised|default:"0" }},
+                {{ profile.currently_raising|default:"0" }}
+            ],
+            backgroundColor: [
+                '#367cf7','#50e3c2','#ffcc29','#ff6978','#ad56ff','#32c6f7','#f77f00'
+            ],
+            borderRadius: 10,
+            barPercentage: 0.65
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: { color: '#eee' }
+            },
+            x: {
+                grid: { display: false }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

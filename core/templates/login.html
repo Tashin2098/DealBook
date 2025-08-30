@@ -4,15 +4,74 @@
 <head>
     <meta charset="UTF-8">
     <title>Login — Diamond AI DealBook</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #0f0f23;
+            --primary-light: #1a1a3a;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --gold: #f59e0b;
+            --gold-light: #fbbf24;
+            --background: #050507;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-light: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: rgba(255, 255, 255, 0.08);
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            --gradient-surface: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            --success: #16a34a;
+            --success-bg: rgba(34, 197, 94, 0.1);
+            --error: #dc2626;
+            --error-bg: rgba(239, 68, 68, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         html,
         body {
             height: 100%;
-            margin: 0;
-            background: #fafafa;
+            background: var(--background);
             font-family: 'Inter', Arial, sans-serif;
-            color: #222;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--background);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.15), transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(245, 158, 11, 0.1), transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08), transparent 50%);
+            animation: bgMove 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            100% { transform: translate(-20px, -20px) rotate(1deg) scale(1.05); }
         }
 
         body {
@@ -21,18 +80,63 @@
             min-height: 100vh;
         }
 
+        /* Premium glass effects */
+        .glass {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+        }
+
+        .glass-premium {
+            background: var(--gradient-surface);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Fade in animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .fade-in-delay-1 { animation-delay: 0.2s; }
+        .fade-in-delay-2 { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .back-link {
-            margin: 24px 0 0 24px;
+            margin: 2rem 0 0 2rem;
             font-size: 0.95rem;
-            color: #6b7280;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             text-decoration: none;
-            font-weight: 400;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .back-link:hover {
-            color: #374151;
+            color: var(--text-primary);
+            transform: translateX(-5px);
+        }
+
+        .back-link svg {
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-3px);
         }
 
         .center-login {
@@ -40,66 +144,124 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .particle-1 { top: 20%; left: 15%; animation-delay: 0s; }
+        .particle-2 { top: 70%; right: 20%; animation-delay: -4s; }
+        .particle-3 { bottom: 30%; left: 25%; animation-delay: -2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
         }
 
         .login-box {
-            width: 384px;
-            background: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-            padding: 32px;
+            width: 420px;
+            background: var(--glass-premium);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 3rem;
             display: flex;
             flex-direction: column;
             align-items: stretch;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0.8;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
         }
 
         .login-box h2 {
-            font-size: 1.875rem;
-            font-weight: 600;
-            margin: 0 0 8px 0;
-            text-align: center;
-            color: #111827;
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .login-box p {
-            color: #6b7280;
-            font-size: 0.95rem;
-            margin-bottom: 24px;
-            margin-top: 0;
-            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0;
+            font-weight: 400;
         }
 
         .btn-google {
             width: 100%;
-            background: #ffffff;
-            color: #374151;
-            border: 1px solid #d1d5db;
-            font-weight: 500;
-            padding: 12px 16px;
-            border-radius: 6px;
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            font-size: 0.875rem;
-            transition: all 0.15s;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
             cursor: pointer;
             text-decoration: none;
-            box-sizing: border-box;
-            min-height: 44px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-google::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-google:hover::before {
+            left: 100%;
         }
 
         .btn-google:hover {
-            background: #f9fafb;
-            border-color: #9ca3af;
+            background: var(--surface-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
         }
 
         .google-icon {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%234285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="%2334a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="%23fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="%23ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>') no-repeat center;
             background-size: contain;
             flex-shrink: 0;
@@ -108,13 +270,13 @@
         .or-divider {
             width: 100%;
             text-align: center;
-            color: #9ca3af;
-            font-size: 0.75rem;
-            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
             position: relative;
-            margin: 20px 0;
+            margin: 1.5rem 0;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1em;
         }
 
         .or-divider:before,
@@ -122,9 +284,9 @@
             content: "";
             position: absolute;
             top: 50%;
-            width: calc(50% - 20px);
+            width: calc(50% - 1.5rem);
             height: 1px;
-            background: #e5e7eb;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
         }
 
         .or-divider:before {
@@ -142,138 +304,260 @@
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 1.5rem;
+            position: relative;
         }
 
         .login-box label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
             display: block;
+            letter-spacing: 0.02em;
         }
 
         .login-box input {
             width: 100%;
-            padding: 10px 12px;
-            font-size: 0.875rem;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            background: #ffffff;
+            padding: 1rem 1.25rem;
+            font-size: 0.95rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-primary);
             outline: none;
-            transition: all 0.15s;
-            box-sizing: border-box;
+            transition: all 0.3s ease;
             font-family: inherit;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .login-box input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: var(--accent);
+            background: var(--surface-light);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-1px);
         }
 
         .login-box input::placeholder {
-            color: #9ca3af;
+            color: var(--text-muted);
         }
 
         .btn-signin {
-            background: #111827;
+            background: var(--gradient-primary);
             color: #ffffff;
             border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            padding: 11px 16px;
-            font-size: 0.875rem;
+            border-radius: 12px;
+            font-weight: 700;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
             width: 100%;
-            margin-top: 8px;
+            margin-top: 0.5rem;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: all 0.3s ease;
             font-family: inherit;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-signin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-signin:hover::before {
+            left: 100%;
         }
 
         .btn-signin:hover {
-            background: #1f2937;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-signin:active {
+            transform: translateY(0);
         }
 
         .tos {
-            font-size: 0.75rem;
-            color: #6b7280;
+            font-size: 0.8rem;
+            color: var(--text-muted);
             text-align: center;
-            margin: 16px 0 0 0;
-            line-height: 1.4;
+            margin: 1.5rem 0 0 0;
+            line-height: 1.5;
         }
 
         .tos a {
-            color: #3b82f6;
+            color: var(--accent-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .tos a:hover {
+            color: var(--accent);
             text-decoration: underline;
         }
 
         .login-bottom {
-            margin-top: 24px;
-            font-size: 0.875rem;
+            margin-top: 2rem;
+            font-size: 0.95rem;
             text-align: center;
-            color: #6b7280;
+            color: var(--text-secondary);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
         }
 
         .login-bottom a {
-            color: #3b82f6;
-            text-decoration: underline;
-            font-weight: 500;
+            color: var(--accent-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
+        .login-bottom a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        /* Flash Messages */
         .flash-message {
-    padding: 12px;
-    margin-bottom: 16px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-}
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: slideIn 0.5s ease-out;
+        }
 
-/* Error messages */
-.flash-message.error {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
-}
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-/* Success messages */
-.flash-message.success {
-    background: #ecfdf5;
-    color: #16a34a;
-    border: 1px solid #bbf7d0;
-}
+        .flash-message.error {
+            background: var(--error-bg);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
 
+        .flash-message.success {
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
 
+        .flash-message::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 12px 0 0 12px;
+        }
+
+        .flash-message.error::before {
+            background: var(--error);
+        }
+
+        .flash-message.success::before {
+            background: var(--success);
+        }
+
+        /* Responsive Design */
         @media (max-width: 600px) {
             .login-box {
-                width: calc(100vw - 32px);
-                margin: 0 16px;
+                width: calc(100vw - 2rem);
+                margin: 0 1rem;
+                padding: 2rem;
             }
             
             .back-link {
-                margin: 16px 0 0 16px;
+                margin: 1rem 0 0 1rem;
             }
+
+            .center-login {
+                padding: 1rem;
+            }
+
+            .login-box h2 {
+                font-size: 1.8rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
     </style>
 </head>
 
 <body>
-    <a href="/" class="back-link">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 8px;">
+    <div class="animated-bg"></div>
+    
+    <a href="/" class="back-link fade-in">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8.5 2.5L3 8l5.5 5.5L9 13l-4.5-4.5L9 4l-.5-.5z"/>
         </svg>
         Back to Home
     </a>
+    
     <div class="center-login">
-        <div class="login-box">
-            <h2>Welcome back</h2>
-            <p>Sign in to your account to continue</p>
+        <div class="particle particle-1"></div>
+        <div class="particle particle-2"></div>
+        <div class="particle particle-3"></div>
+        
+        <div class="login-box fade-in fade-in-delay-1">
+            <div class="login-header">
+                <h2>Welcome back</h2>
+                <p>Sign in to your account to continue</p>
+            </div>
 
             {% if messages %}
-    {% for message in messages %}
-    <div class="flash-message {{ message.tags }}">
-        {{ message }}
-    </div>
-    {% endfor %}
-{% endif %}
+                {% for message in messages %}
+                <div class="flash-message {{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
             
             <!-- Google Login Button -->
             <a href="/accounts/google/login/" class="btn-google">
@@ -310,18 +594,109 @@
             </div>
         </div>
     </div>
-</body>
 
-<script>
-    setTimeout(() => {
-        document.querySelectorAll('.flash-message').forEach(msg => {
-            msg.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-            msg.style.opacity = "0";
-            msg.style.transform = "translateY(-10px)";
-            setTimeout(() => msg.remove(), 500);
+    <script>
+        // Enhanced flash message handling with better animations
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => {
+                msg.style.transition = "all 0.5s ease";
+                msg.style.opacity = "0";
+                msg.style.transform = "translateY(-20px) scale(0.95)";
+                setTimeout(() => msg.remove(), 500);
+            });
+        }, 3000);
+
+        // Form submission loading state
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const button = this.querySelector('.btn-signin');
+            const originalText = button.textContent;
+            
+            button.textContent = 'Signing in...';
+            button.classList.add('loading');
+            button.disabled = true;
+            
+            // Re-enable if form validation fails (fallback)
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('loading');
+                button.disabled = false;
+            }, 5000);
         });
-    }, 2000);
-</script>
 
+        // Input focus animations
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Enhanced button interactions
+        document.querySelectorAll('.btn-google, .btn-signin').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.02)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Parallax effect for background
+        window.addEventListener('mousemove', (e) => {
+            const particles = document.querySelectorAll('.particle');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            particles.forEach((particle, index) => {
+                const speed = (index + 1) * 0.5;
+                particle.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.btn-google, .btn-signin').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.6);
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                    z-index: 1;
+                `;
+                
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation to CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
 
 </html>
