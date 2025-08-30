@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class StartupProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='startup_profile')
 
@@ -56,14 +55,30 @@ class StartupProfile(models.Model):
     # --- Approval / Admin ---
     is_approved = models.BooleanField(default=False)
     is_onboarded = models.BooleanField(default=False)
+    complete_profile_submitted = models.BooleanField(default=False)
     submitted_at = models.DateTimeField(auto_now_add=True)
 
-
+    # --- Phase 2: Complete Your Profile ---
+    arr = models.FloatField(
+        null=True, blank=True, verbose_name="Annual Recurring Revenue (ARR)"
+    )
+    arpu = models.FloatField(
+        null=True, blank=True, verbose_name="Average Revenue Per User (ARPU)"
+    )
+    monthly_burn = models.FloatField(null=True, blank=True)
+    cash_balance = models.FloatField(null=True, blank=True)
+    ltv_cac_ratio = models.FloatField(null=True, blank=True)
+    operating_expenses = models.FloatField(null=True, blank=True)
+    debt_obligations = models.TextField(null=True, blank=True)
+    capital_raised = models.FloatField(null=True, blank=True)
+    currently_raising = models.FloatField(null=True, blank=True)
+    equity_offered = models.FloatField(null=True, blank=True)
+    financial_forecast = models.FileField(
+        upload_to='financial_forecasts/', null=True, blank=True
+    )
 
     def __str__(self):
         return f"{self.user.username} — {self.startup_name}"
-
-
 
 class InvestorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='investor_profile')
@@ -86,7 +101,15 @@ class InvestorProfile(models.Model):
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-
-
     def __str__(self):
         return f"Investor: {self.investment_range} ({self.looking_for})"
+    
+
+class CapTableEntry(models.Model):
+    startup = models.ForeignKey('StartupProfile', on_delete=models.CASCADE, related_name='cap_table_entries')
+    name = models.CharField(max_length=100)
+    shares = models.PositiveIntegerField()
+    percent = models.FloatField()  # Store as percentage, e.g., 22.5
+
+    def __str__(self):
+        return f"{self.name} — {self.percent}%"

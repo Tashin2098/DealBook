@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders', 
     'core',
+    'django.contrib.humanize',
     'django.contrib.sites', 
     'allauth',
     'allauth.account',
@@ -149,6 +150,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 SITE_ID = 4
 
 LOGIN_REDIRECT_URL = '/post-login/'
+LOGOUT_REDIRECT_URL = 'login'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
