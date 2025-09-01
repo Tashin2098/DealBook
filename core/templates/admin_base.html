@@ -434,7 +434,7 @@
                     <ul class="sidebar-subnav">
                         <li><a href="{% url 'admin_users' %}" hx-get="{% url 'admin_users' %}" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'admin_users' %}active{% endif %}">Admin Users</a></li>
                         <li><a href="{% url 'startup_users' %}" hx-get="{% url 'startup_users' %}" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'startup_users' %}active{% endif %}">Startup Users</a></li>
-                        <li><a href="#" hx-get="#" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'investor_users' %}active{% endif %}">Investor Users</a></li>
+                        <li><a href="{% url 'investor_users' %}" hx-get="{% url 'investor_users' %}" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'investor_users' %}active{% endif %}">Investor Users</a></li>
                         <li><a href="#" hx-get="#" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'role_permissions' %}active{% endif %}">Role Permissions</a></li>
                     </ul>
                 </li>

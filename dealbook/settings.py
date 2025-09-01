@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders', 
     'core',
+    'django.contrib.humanize',
     'django.contrib.sites', 
     'allauth',
     'allauth.account',

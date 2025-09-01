@@ -1,6 +1,6 @@
-{% extends "startup_base.html" %}
+
 {% load humanize %}
-{% block title %}Financial Metrics{% endblock %}
+
 {% block content %}
 
 <style>
@@ -403,18 +403,7 @@
     </div>
 </div>
 
-<!-- Success Message Toast -->
-<div id="successMessage" class="success-message">
-    <svg class="icon-small" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.58L19 8l-9 9z"/>
-    </svg>
-    <span>Financial metrics saved successfully!</span>
-    <button class="close-btn" onclick="hideSuccessMessage()">
-        <svg class="icon-small" viewBox="0 0 24 24">
-            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
-    </button>
-</div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -458,12 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('keyup', checkForChanges);
     });
     
-    // Handle form submission for success message
-    form.addEventListener('submit', function(e) {
-        // Don't prevent default - let Django handle the submission
-        // Just show the success message after a short delay
-        setTimeout(showSuccessMessage, 500);
-    });
+    
 });
 
 function showSuccessMessage() {

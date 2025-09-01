@@ -1,10 +1,5 @@
-{% extends "admin_base.html" %}
 {% load static %}
 {% load startup_extras %}
-
-{% block title %}Investor Users{% endblock %}
-
-
 
 {% block content %}
 <style>
@@ -365,20 +360,32 @@ function closeInvestorModal() {
    1) Event delegation with .closest() so clicks on children still work.
    2) JSON passed via URL-encoded data attribute to avoid attribute-quote issues.
 */
-document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.view-details-btn');
-    if (!btn) return;
+function initInvestorModals() {
+    document.querySelectorAll('.view-details-btn').forEach(btn => {
+        btn.onclick = function() {
+            try {
+                const encoded = btn.dataset.investor || '';
+                const jsonStr = decodeURIComponent(encoded);
+                const data = JSON.parse(jsonStr);
+                renderInvestorModal(data);
+            } catch (err) {
+                console.error(err);
+                alert('Failed to parse details: ' + err);
+            }
+        };
+    });
+}
 
-    try {
-        const encoded = btn.dataset.investor || '';
-        const jsonStr = decodeURIComponent(encoded);
-        const data = JSON.parse(jsonStr);
-        renderInvestorModal(data);
-    } catch (err) {
-        console.error(err);
-        alert('Failed to parse details: ' + err);
+// Run once on full page load
+document.addEventListener("DOMContentLoaded", initInvestorModals);
+
+// Run after HTMX swaps partials
+document.body.addEventListener("htmx:afterSwap", function(evt) {
+    if (evt.target.querySelector('.view-details-btn')) {
+        initInvestorModals();
     }
 });
+
 
 function renderInvestorModal(data) {
     let html = `

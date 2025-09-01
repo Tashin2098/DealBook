@@ -1,5 +1,4 @@
-{% extends "startup_base.html" %}
-{% block title %}Cap Table{% endblock %}
+
 
 {% block content %}
 <style>
@@ -148,7 +147,6 @@
                     </tbody>
                 </table>
             </div>
-
             <!-- PIE CHART -->
             <div class="cap-card">
                 <h2>Equity Ownership</h2>
@@ -160,45 +158,61 @@
     </div>
 </div>
 
-<!-- Chart.js PIE CHART -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const pieCtx = document.getElementById('capPieChart');
-new Chart(pieCtx, {
-    type: 'pie',
-    data: {
-        labels: [{% for owner in cap_table %}'{{ owner.name }}',{% endfor %}],
-        datasets: [{
-            data: [{% for owner in cap_table %}{{ owner.percent }},{% endfor %}],
-            backgroundColor: [
-                '#667eea', '#4fd1c7', '#f6e05e', '#fc8181', '#b794f6', '#63b3ed', '#f687b3'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'right',
-                labels: { font: { size: 12 }, color: '#2d3748' }
-            },
-            tooltip: {
-                backgroundColor: 'rgba(0,0,0,0.8)',
-                titleColor: '#fff',
-                bodyColor: '#fff',
-                borderColor: '#e2e8f0',
-                borderWidth: 1,
-                cornerRadius: 8,
-                callbacks: {
-                    label: function(context) {
-                        return context.label + ': ' + context.parsed + '%';
+function initCapPieChart() {
+    const pieCtx = document.getElementById('capPieChart');
+    if (!pieCtx) return; // prevent errors if canvas not in DOM
+    
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: [{% for owner in cap_table %}'{{ owner.name }}',{% endfor %}],
+            datasets: [{
+                data: [{% for owner in cap_table %}{{ owner.percent }},{% endfor %}],
+                backgroundColor: [
+                    '#667eea', '#4fd1c7', '#f6e05e', '#fc8181',
+                    '#b794f6', '#63b3ed', '#f687b3'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { font: { size: 12 }, color: '#2d3748' }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#e2e8f0',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed + '%';
+                        }
                     }
                 }
             }
         }
+    });
+}
+
+// Run on full page load
+document.addEventListener("DOMContentLoaded", initCapPieChart);
+
+// Run when HTMX swaps in this partial
+document.body.addEventListener("htmx:afterSwap", function(evt) {
+    if (evt.target.querySelector("#capPieChart")) {
+        initCapPieChart();
     }
 });
 </script>
+
 {% endblock %}

@@ -1,27 +1,265 @@
 {% extends "startup_base.html" %}
 {% block title %}My Fundraise{% endblock %}
 {% block content %}
-<h1 style="font-weight:700; margin-bottom:30px;">My Fundraise</h1>
-<div style="display:flex; gap:34px; flex-wrap:wrap;">
-    <div style="background:#fff; border-radius:12px; box-shadow:0 1px 8px #eee; padding:28px 38px; flex:1; min-width:200px;">
-        <div style="color:#888;">Currently Raising</div>
-        <div style="font-size:2rem; font-weight:800; margin-top:10px;">${{ currently_raising|default:"0" }}</div>
+
+<style>
+    .fundraise-container {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 16px;
+        box-sizing: border-box;
+    }
+    
+    .page-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f2f5;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1a202c;
+        margin: 0;
+    }
+    
+    .metrics-grid {
+        display: grid;
+        gap: 20px;
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+    
+    @media (min-width: 640px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+    }
+    
+    @media (min-width: 1280px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 24px;
+        }
+    }
+    
+    .metric-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+        padding: 24px;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        min-height: 140px;
+        box-sizing: border-box;
+    }
+    
+    .metric-card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .metric-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #1a202c;
+        line-height: 1.2;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+    }
+    
+    .currency-value {
+        color: #059669;
+    }
+    
+    .percentage-value {
+        color: #3b82f6;
+    }
+    
+    .pitch-deck-link {
+        color: #1a52a4;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+    }
+    
+    .pitch-deck-link:hover {
+        background: #e2e8f0;
+        transform: translateX(2px);
+    }
+    
+    .not-uploaded {
+        color: #9ca3af;
+        font-weight: 500;
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+    
+    .icon {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+    }
+    
+    .icon-small {
+        width: 14px;
+        height: 14px;
+        fill: currentColor;
+    }
+    
+    /* Enhanced mobile responsiveness */
+    @media (max-width: 639px) {
+        .fundraise-container {
+            padding: 12px;
+        }
+        
+        .page-title {
+            font-size: 1.4rem;
+        }
+        
+        .page-header {
+            margin-bottom: 20px;
+        }
+        
+        .metrics-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        .metric-card {
+            padding: 20px 16px;
+            min-height: 120px;
+        }
+        
+        .metric-value {
+            font-size: 1.6rem;
+        }
+    }
+    
+    @media (min-width: 640px) and (max-width: 1023px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .metric-card {
+            min-height: 130px;
+        }
+    }
+    
+    /* Special styling for specific metrics */
+    .raising-card {
+        border-left: 4px solid #059669;
+    }
+    
+    .equity-card {
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .capital-card {
+        border-left: 4px solid #8b5cf6;
+    }
+    
+    .pitch-card {
+        border-left: 4px solid #f59e0b;
+    }
+</style>
+
+<div class="fundraise-container">
+    <div class="page-header">
+        <svg class="icon" viewBox="0 0 24 24">
+            <path d="M14 6V4h-4v2h4zM4 8v11h16V8H4zm16-2c1.11 0 2 .89 2 2v11c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2l.01-11c0-1.11.88-2 1.99-2h4V4c0-1.11.89-2 2-2h4c1.11 0 2 .89 2 2v2h4z"/>
+        </svg>
+        <h1 class="page-title">My Fundraise</h1>
     </div>
-    <div style="background:#fff; border-radius:12px; box-shadow:0 1px 8px #eee; padding:28px 38px; flex:1; min-width:200px;">
-        <div style="color:#888;">Equity Offered</div>
-        <div style="font-size:2rem; font-weight:800; margin-top:10px;">{{ equity_offered|default:"0" }}%</div>
-    </div>
-    <div style="background:#fff; border-radius:12px; box-shadow:0 1px 8px #eee; padding:28px 38px; flex:1; min-width:200px;">
-        <div style="color:#888;">Capital Raised</div>
-        <div style="font-size:2rem; font-weight:800; margin-top:10px;">${{ capital_raised|default:"0" }}</div>
-    </div>
-    <div style="background:#fff; border-radius:12px; box-shadow:0 1px 8px #eee; padding:28px 38px; flex:1; min-width:200px;">
-        <div style="color:#888;">Pitch Deck</div>
-        {% if pitch_deck_url %}
-            <a href="{{ pitch_deck_url }}" target="_blank" style="color:#1a52a4; font-weight:600;">View Deck</a>
-        {% else %}
-            <span style="color:#aaa;">Not Uploaded</span>
-        {% endif %}
+
+    <div class="metrics-grid">
+        <div class="metric-card raising-card">
+            <div class="metric-label">
+                <svg class="icon-small" viewBox="0 0 24 24">
+                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                </svg>
+                Currently Raising
+            </div>
+            <div class="metric-value currency-value">
+                ${{ currently_raising|default:"0"|floatformat:0 }}
+            </div>
+        </div>
+
+        <div class="metric-card equity-card">
+            <div class="metric-label">
+                <svg class="icon-small" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                Equity Offered
+            </div>
+            <div class="metric-value percentage-value">
+                {{ equity_offered|default:"0"|floatformat:1 }}%
+            </div>
+        </div>
+
+        <div class="metric-card capital-card">
+            <div class="metric-label">
+                <svg class="icon-small" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                </svg>
+                Capital Raised
+            </div>
+            <div class="metric-value currency-value">
+                ${{ capital_raised|default:"0"|floatformat:0 }}
+            </div>
+        </div>
+
+        <div class="metric-card pitch-card">
+            <div class="metric-label">
+                <svg class="icon-small" viewBox="0 0 24 24">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+                Pitch Deck
+            </div>
+            <div class="metric-value">
+                {% if pitch_deck_url %}
+                    <a href="{{ pitch_deck_url }}" target="_blank" class="pitch-deck-link">
+                        <svg class="icon-small" viewBox="0 0 24 24">
+                            <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                        </svg>
+                        View Deck
+                    </a>
+                {% else %}
+                    <span class="not-uploaded">Not Uploaded</span>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
+
 {% endblock %}

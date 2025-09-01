@@ -1,9 +1,9 @@
-{% extends "startup_base.html" %}
-{% block title %}Fundraising Dashboard{% endblock %}
+
+
 {% block content %}
 
 <style>
-    .dashboard-container {
+    .fundraise-container {
         max-width: 100%;
         width: 100%;
         margin: 0;
@@ -32,7 +32,6 @@
         gap: 20px;
         width: 100%;
         grid-template-columns: 1fr;
-        margin-bottom: 32px;
     }
     
     @media (min-width: 640px) {
@@ -43,12 +42,13 @@
     
     @media (min-width: 1024px) {
         .metrics-grid {
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
         }
     }
     
     @media (min-width: 1280px) {
         .metrics-grid {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 24px;
         }
     }
@@ -64,41 +64,11 @@
         flex-direction: column;
         min-height: 140px;
         box-sizing: border-box;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .metric-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #059669, #10b981);
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }
-    
-    .metric-card:hover::before {
-        transform: translateX(0);
     }
     
     .metric-card:hover {
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-        transform: translateY(-4px);
-    }
-    
-    .raising-card::before {
-        background: linear-gradient(90deg, #059669, #10b981);
-    }
-    
-    .capital-card::before {
-        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
-    }
-    
-    .equity-card::before {
-        background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
     }
     
     .metric-label {
@@ -109,12 +79,10 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
     
     .metric-value {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 800;
         color: #1a202c;
         line-height: 1.2;
@@ -131,50 +99,47 @@
         color: #3b82f6;
     }
     
-    .capital-value {
-        color: #8b5cf6;
+    .pitch-deck-link {
+        color: #1a52a4;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+        font-size: 0.95rem;
+    }
+    
+    .pitch-deck-link:hover {
+        background: #e2e8f0;
+        transform: translateX(2px);
+    }
+    
+    .not-uploaded {
+        color: #9ca3af;
+        font-weight: 500;
+        font-style: italic;
+        font-size: 0.9rem;
     }
     
     .icon {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         fill: currentColor;
     }
     
     .icon-small {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         fill: currentColor;
-    }
-    
-    .future-section {
-        background: #f8fafc;
-        border: 2px dashed #cbd5e1;
-        border-radius: 12px;
-        padding: 32px;
-        text-align: center;
-        margin-top: 24px;
-        transition: all 0.3s ease;
-    }
-    
-    .future-section:hover {
-        border-color: #94a3b8;
-        background: #f1f5f9;
-    }
-    
-    .future-text {
-        color: #64748b;
-        font-size: 1rem;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
     }
     
     /* Enhanced mobile responsiveness */
     @media (max-width: 639px) {
-        .dashboard-container {
+        .fundraise-container {
             padding: 12px;
         }
         
@@ -189,7 +154,6 @@
         .metrics-grid {
             grid-template-columns: 1fr;
             gap: 16px;
-            margin-bottom: 24px;
         }
         
         .metric-card {
@@ -200,8 +164,6 @@
         .metric-value {
             font-size: 1.6rem;
         }
-        
-        
     }
     
     @media (min-width: 640px) and (max-width: 1023px) {
@@ -210,57 +172,34 @@
         }
         
         .metric-card {
-            min-height: 135px;
-        }
-        
-        .metric-value {
-            font-size: 1.8rem;
+            min-height: 130px;
         }
     }
     
-    @media (min-width: 1024px) {
-        .metrics-grid {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-        
-        .metric-card {
-            min-height: 140px;
-        }
+    /* Special styling for specific metrics */
+    .raising-card {
+        border-left: 4px solid #059669;
     }
     
-    /* Animation for numbers */
-    .metric-value {
-        animation: fadeInUp 0.6s ease-out forwards;
-        opacity: 0;
-        transform: translateY(20px);
+    .equity-card {
+        border-left: 4px solid #3b82f6;
     }
     
-    .metric-card:nth-child(1) .metric-value {
-        animation-delay: 0.1s;
+    .capital-card {
+        border-left: 4px solid #8b5cf6;
     }
     
-    .metric-card:nth-child(2) .metric-value {
-        animation-delay: 0.2s;
-    }
-    
-    .metric-card:nth-child(3) .metric-value {
-        animation-delay: 0.3s;
-    }
-    
-    @keyframes fadeInUp {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .pitch-card {
+        border-left: 4px solid #f59e0b;
     }
 </style>
 
-<div class="dashboard-container">
+<div class="fundraise-container">
     <div class="page-header">
         <svg class="icon" viewBox="0 0 24 24">
-            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+            <path d="M14 6V4h-4v2h4zM4 8v11h16V8H4zm16-2c1.11 0 2 .89 2 2v11c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2l.01-11c0-1.11.88-2 1.99-2h4V4c0-1.11.89-2 2-2h4c1.11 0 2 .89 2 2v2h4z"/>
         </svg>
-        <h1 class="page-title">Fundraising Dashboard</h1>
+        <h1 class="page-title">My Fundraise</h1>
     </div>
 
     <div class="metrics-grid">
@@ -276,18 +215,6 @@
             </div>
         </div>
 
-        <div class="metric-card capital-card">
-            <div class="metric-label">
-                <svg class="icon-small" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
-                </svg>
-                Capital Raised
-            </div>
-            <div class="metric-value capital-value">
-                ${{ capital_raised|default:"0"|floatformat:0 }}
-            </div>
-        </div>
-
         <div class="metric-card equity-card">
             <div class="metric-label">
                 <svg class="icon-small" viewBox="0 0 24 24">
@@ -299,9 +226,40 @@
                 {{ equity_offered|default:"0"|floatformat:1 }}%
             </div>
         </div>
-    </div>
 
-    
+        <div class="metric-card capital-card">
+            <div class="metric-label">
+                <svg class="icon-small" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                </svg>
+                Capital Raised
+            </div>
+            <div class="metric-value currency-value">
+                ${{ capital_raised|default:"0"|floatformat:0 }}
+            </div>
+        </div>
+
+        <div class="metric-card pitch-card">
+            <div class="metric-label">
+                <svg class="icon-small" viewBox="0 0 24 24">
+                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                </svg>
+                Pitch Deck
+            </div>
+            <div class="metric-value">
+                {% if pitch_deck_url %}
+                    <a href="{{ pitch_deck_url }}" target="_blank" class="pitch-deck-link">
+                        <svg class="icon-small" viewBox="0 0 24 24">
+                            <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                        </svg>
+                        View Deck
+                    </a>
+                {% else %}
+                    <span class="not-uploaded">Not Uploaded</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

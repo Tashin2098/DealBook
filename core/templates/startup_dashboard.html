@@ -4,12 +4,21 @@
 
 {% block content %}
 <style>
+    /* Enhanced but preserving original theme */
+    h1 {
+        font-weight: 700;
+        margin-bottom: 32px;
+        font-size: 2rem;
+        color: #222845;
+    }
+
     .dash-cards-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 32px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
         margin-bottom: 42px;
     }
+    
     .dash-card {
         background: #fff;
         border-radius: 20px;
@@ -20,9 +29,16 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        transition: box-shadow .14s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
+    
+    .dash-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 32px 0 rgba(231, 236, 243, 0.8);
+    }
+    
     .dash-card .dash-label {
         font-size: 1.06rem;
         font-weight: 600;
@@ -30,6 +46,7 @@
         margin-bottom: 8px;
         letter-spacing: .02em;
     }
+    
     .dash-card .dash-value {
         font-size: 2.1rem;
         font-weight: 800;
@@ -37,6 +54,7 @@
         line-height: 1.1;
         word-break: break-word;
     }
+    
     .dash-card .status-badge {
         font-size: 1.28rem;
         font-weight: 700;
@@ -46,56 +64,245 @@
         gap: 8px;
         margin-top: 6px;
     }
-    .dash-card .status-badge.danger { color: #e2585e; }
+    
+    .dash-card .status-badge.danger { 
+        color: #e2585e; 
+    }
+    
     .dash-card .check {
         font-size: 1.7rem;
         vertical-align: middle;
         margin-right: 3px;
     }
 
-    /* Responsive: stack widgets + timeline side by side on desktop, vertical on mobile */
+    /* Enhanced responsive content layout */
     .dash-content-flex {
         display: flex;
         gap: 38px;
         flex-wrap: wrap;
         align-items: flex-start;
     }
+    
+    .main-widgets {
+        flex: 2;
+        min-width: 300px;
+    }
+    
     .activity-box {
         background: #fff;
         border-radius: 18px;
         box-shadow: 0 2px 16px #eaeef2;
         padding: 30px 28px 26px 28px;
         min-width: 340px;
-        max-width: 410px;
+        max-width: 450px;
         width: 100%;
+        flex: 1;
+        height: fit-content;
+        transition: all 0.3s ease;
     }
+    
+    .activity-box:hover {
+        box-shadow: 0 4px 24px rgba(234, 238, 242, 0.6);
+    }
+    
     .activity-box h2 {
         font-size: 1.15rem;
         font-weight: 700;
         margin-bottom: 17px;
+        color: #222845;
     }
+    
     .activity-list {
         list-style: none;
-        padding: 0; margin: 0;
+        padding: 0; 
+        margin: 0;
+        max-height: 400px;
+        overflow-y: auto;
     }
+    
+    /* Custom scrollbar for activity list */
+    .activity-list::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .activity-list::-webkit-scrollbar-thumb {
+        background: #e1e5e9;
+        border-radius: 10px;
+    }
+    
+    .activity-list::-webkit-scrollbar-thumb:hover {
+        background: #d1d5db;
+    }
+    
+    .activity-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
     .activity-list li {
         margin-bottom: 21px;
         padding-bottom: 14px;
         border-bottom: 1.1px solid #f0f0f3;
+        transition: all 0.2s ease;
+        padding-left: 0;
+        padding-right: 8px;
     }
-    .activity-list li:last-child { border-bottom: none; }
-    .activity-title { font-weight: 600; color: #22334d; margin-bottom: 2px;}
-    .activity-date { color: #8a91ad; font-size: 0.97rem;}
+    
+    .activity-list li:last-child { 
+        border-bottom: none; 
+        margin-bottom: 0;
+    }
+    
+    .activity-list li:hover {
+        transform: translateX(4px);
+        padding-left: 4px;
+    }
+    
+    .activity-title { 
+        font-weight: 600; 
+        color: #22334d; 
+        margin-bottom: 2px;
+        line-height: 1.4;
+    }
+    
+    .activity-date { 
+        color: #8a91ad; 
+        font-size: 0.97rem;
+        font-weight: 500;
+    }
+    
+    .empty-activity {
+        text-align: center;
+        color: #8a91ad;
+        font-style: italic;
+        padding: 20px 0;
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 1200px) {
+        .dash-cards-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+        
+        .activity-box {
+            max-width: 400px;
+        }
+    }
+    
     @media (max-width: 950px) {
-        .dash-content-flex { flex-direction: column; gap: 32px;}
-        .activity-box { max-width: 100%; }
+        .dash-content-flex { 
+            flex-direction: column; 
+            gap: 32px;
+        }
+        
+        .main-widgets {
+            flex: none;
+        }
+        
+        .activity-box { 
+            max-width: 100%;
+            min-width: auto;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.75rem;
+            margin-bottom: 24px;
+        }
+        
+        .dash-cards-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        
+        .dash-card {
+            padding: 24px 28px;
+            min-height: 100px;
+        }
+        
+        .dash-card .dash-value {
+            font-size: 1.9rem;
+        }
+        
+        .dash-card .dash-label {
+            font-size: 1rem;
+        }
+        
+        .dash-content-flex {
+            gap: 24px;
+        }
+        
+        .activity-box {
+            padding: 24px 20px 20px 20px;
+            min-width: auto;
+        }
+        
+        .activity-box h2 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .activity-list li {
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+        }
+        
+        .activity-title {
+            font-size: 0.95rem;
+        }
+        
+        .activity-date {
+            font-size: 0.9rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .dash-card {
+            padding: 20px 24px;
+        }
+        
+        .dash-card .dash-value {
+            font-size: 1.7rem;
+        }
+        
+        .activity-box {
+            padding: 20px 16px 16px 16px;
+        }
+        
+        .dash-content-flex {
+            gap: 20px;
+        }
+    }
+    
+    /* Improved loading states */
+    .dash-card.loading {
+        opacity: 0.7;
+        pointer-events: none;
+    }
+    
+    .dash-card.loading .dash-value {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 63%);
+        background-size: 400px 100%;
+        animation: shimmer 1.5s ease-in-out infinite;
+        color: transparent;
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200px 0; }
+        100% { background-position: calc(200px + 100%) 0; }
+    }
+    
+    /* Smooth transitions for all interactive elements */
+    * {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 </style>
 
-<h1 style="font-weight: 700; margin-bottom: 32px;">Dashboard</h1>
+<h1>Dashboard</h1>
 
 <div class="dash-content-flex">
-    <div style="flex:2;">
+    <div class="main-widgets">
         <div class="dash-cards-grid">
             {% for label, value in widget_data.items %}
                 <div class="dash-card">
@@ -111,6 +318,7 @@
                         {% elif label == "Onboarded" %}
                             <span class="status-badge" style="color:#24c070;">
                                 <span class="check">✔️</span>
+                                Approved
                             </span>
                         {% else %}
                             {{ value }}
@@ -120,6 +328,7 @@
             {% endfor %}
         </div>
     </div>
+    
     <div class="activity-box">
         <h2>Recent Activity</h2>
         <ul class="activity-list">
@@ -129,7 +338,7 @@
                     <div class="activity-date">{{ activity.date|date:"M d, Y H:i" }}</div>
                 </li>
             {% empty %}
-                <li>No activity yet.</li>
+                <li class="empty-activity">No activity yet.</li>
             {% endfor %}
         </ul>
     </div>

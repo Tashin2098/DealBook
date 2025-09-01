@@ -10,7 +10,7 @@ from .models import StartupProfile
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
-from .models import StartupProfile,InvestorProfile
+from .models import StartupProfile,InvestorProfile, CapTableEntry
 
 
 @api_view(['GET'])
@@ -63,18 +63,31 @@ def post_login_view(request):
     if user.is_staff or user.is_superuser:
         return redirect('admin_dashboard')
 
-    # --- THIS IS NEW: Check for StartupProfile
     if hasattr(user, 'startup_profile'):
-        # They already completed startup onboarding, show approval page
-        return redirect('startup_onboard_complete')
-    
+        profile = user.startup_profile
+        if not profile.is_approved:
+            # Awaiting admin approval after 1st form
+            return redirect('startup_onboard_complete')
+
+        # Approved but not onboarded yet
+        if profile.is_approved and not profile.is_onboarded:
+            if not profile.complete_profile_submitted:
+                # Show 2nd profile form (step 1)
+                return redirect('startup_complete_profile_step1')
+            else:
+                # 2nd form submitted, awaiting admin to onboard
+                return redirect('startup_onboard_pending')
+
+        # Approved AND onboarded (all done)
+        if profile.is_onboarded:
+            return redirect('startup_dashboard')
+
     # --- Check for Investor Onboarding ---
     if hasattr(user, 'investor_profile'):
         return redirect('investor_onboard_complete')
-    
-    else:
-        # Not completed onboarding, send to onboarding
-        return redirect('onboarding')
+
+    # Not completed onboarding, send to onboarding
+    return redirect('onboarding')
 
 @staff_member_required
 def admin_dashboard(request):
@@ -226,15 +239,91 @@ def startup_onboard_step5(request):
 def startup_onboard_complete(request):
     profile = StartupProfile.objects.filter(user=request.user).first()
     is_approved = profile.is_approved if profile else False
+    is_onboarded = profile.is_onboarded if profile else False
     user_name = request.user.first_name
     company_name = profile.startup_name if profile else ""
     context = {
         "is_approved": is_approved,
+        "is_onboarded": is_onboarded,
         "user_name": user_name,
         "company_name": company_name,
     }
     return render(request, "onboarding_complete.html", context)
 
+# ------------------- COMPLETE PROFILE: PHASE 2 FOR STARTUP -------------------
+@login_required
+def startup_complete_profile_step1(request):
+    # Phase 2 Step 1: First 6 questions (ARR, ARPU, Burn, Cash, LTV:CAC, OpEx, Debt)
+    if not hasattr(request.user, 'startup_profile'):
+        return redirect('onboarding')
+    profile = request.user.startup_profile
+    if not profile.is_approved:
+        return redirect('startup_onboard_complete')
+    # If already onboarded, skip
+    if profile.is_onboarded:
+        return redirect('startup_dashboard')  # replace with dashboard
+
+    if request.method == "POST":
+        arr = request.POST.get('arr')
+        arpu = request.POST.get('arpu')
+        monthly_burn = request.POST.get('monthly_burn')
+        cash_balance = request.POST.get('cash_balance')
+        ltv_cac_ratio = request.POST.get('ltv_cac_ratio')
+        operating_expenses = request.POST.get('operating_expenses')
+        debt_obligations = request.POST.get('debt_obligations')
+
+        # Store in session for step2
+        request.session['profile_step1'] = {
+            "arr": arr, "arpu": arpu, "monthly_burn": monthly_burn,
+            "cash_balance": cash_balance, "ltv_cac_ratio": ltv_cac_ratio,
+            "operating_expenses": operating_expenses, "debt_obligations": debt_obligations
+        }
+        return redirect('startup_complete_profile_step2')
+
+    # Prefill if session data exists
+    data = request.session.get('profile_step1', {})
+    return render(request, "startup_complete_profile_step1.html", data)
+
+@login_required
+def startup_complete_profile_step2(request):
+    # Phase 2 Step 2: Rest of the questions (Capital, Raising, Equity, Forecast)
+    if not hasattr(request.user, 'startup_profile'):
+        return redirect('onboarding')
+    profile = request.user.startup_profile
+    if not profile.is_approved:
+        return redirect('startup_onboard_complete')
+    if profile.is_onboarded:
+        return redirect('startup_dashboard')  # replace with dashboard
+
+    if request.method == "POST":
+        capital_raised = request.POST.get('capital_raised')
+        currently_raising = request.POST.get('currently_raising')
+        equity_offered = request.POST.get('equity_offered')
+        financial_forecast = request.FILES.get('financial_forecast')
+
+        # Get previous answers from step1
+        prev = request.session.get('profile_step1', {})
+        # Update profile fields
+        profile.arr = prev.get('arr')
+        profile.arpu = prev.get('arpu')
+        profile.monthly_burn = prev.get('monthly_burn')
+        profile.cash_balance = prev.get('cash_balance')
+        profile.ltv_cac_ratio = prev.get('ltv_cac_ratio')
+        profile.operating_expenses = prev.get('operating_expenses')
+        profile.debt_obligations = prev.get('debt_obligations')
+        profile.capital_raised = capital_raised
+        profile.currently_raising = currently_raising
+        profile.equity_offered = equity_offered
+        if financial_forecast:
+            profile.financial_forecast = financial_forecast
+        profile.complete_profile_submitted = True
+        profile.save()
+        # Remove session data
+        if 'profile_step1' in request.session:
+            del request.session['profile_step1']
+        return redirect('startup_onboard_pending')  # replace with dashboard
+
+    return render(request, "startup_complete_profile_step2.html")
 
 # ---------------- INVESTOR ONBOARDING FORM ----------------
 @login_required
@@ -285,3 +374,272 @@ def investor_onboard_complete(request):
         "user_name": user_name,
     }
     return render(request, "investor_onboarding_complete.html", context)
+
+@staff_member_required
+def investor_users_admin(request):
+    investors = InvestorProfile.objects.all().select_related('user').order_by('-created_at')
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "admin_partials/admin_investor_users_partial.html", {"investors": investors})
+    else:
+        # return full page with sidebar
+        return render(request, 'admin_investor_users.html', {
+        'investors': investors
+    }) 
+
+
+@require_POST
+@staff_member_required
+def toggle_investor_status(request):
+    import json
+    data = json.loads(request.body)
+    iid = data.get("id")
+    field = data.get("field")
+    value = data.get("value")
+    # Parse value to bool (for checkbox)
+    value = value in ['true', 'True', True, 1, '1']
+    if field not in ["is_approved"]:
+        return JsonResponse({"success": False, "error": "Invalid field"}, status=400)
+    try:
+        investor = InvestorProfile.objects.get(pk=iid)
+        setattr(investor, field, value)
+        investor.save()
+        return JsonResponse({"success": True})
+    except InvestorProfile.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Not found"}, status=404)
+    
+@login_required
+def startup_onboard_pending(request):
+    return render(request, "startup_onboard_pending.html")
+
+@login_required
+def startup_dashboard(request):
+    # You can add your real dashboard logic later
+    return render(request, "startup_dashboard.html")
+
+
+@login_required
+def startup_dashboard(request):
+    profile = getattr(request.user, 'startup_profile', None)
+    if not profile or not profile.is_onboarded:
+        return redirect('post_login')  # Handle edge cases (not onboarded, etc.)
+
+    # Prepare widget/stat data
+    widget_data = {
+        "ARR": profile.arr or 0,
+        "ARPU": profile.arpu or 0,
+        "Burn": profile.monthly_burn or 0,
+        "Cash": profile.cash_balance or 0,
+        "LTV_CAC": profile.ltv_cac_ratio or 0,
+        "Currently Raising": profile.currently_raising or 0,
+        "Equity Offered": profile.equity_offered or 0,
+        "Approval": "✅ Approved" if profile.is_approved else "⏳ Pending",
+        "Onboarded": "✅" if profile.is_onboarded else "⏳",
+    }
+
+    # Example activity list (customize as needed)
+    activities = [
+        {"date": profile.submitted_at, "desc": "Profile submitted"},
+        {"date": profile.submitted_at, "desc": "Profile approved by admin"} if profile.is_approved else None,
+        {"date": profile.submitted_at, "desc": "Completed onboarding"} if profile.is_onboarded else None,
+        # You can add more activity from fundraise, etc.
+    ]
+    # Filter out None values
+    activities = [a for a in activities if a]
+
+    return render(request, "startup_dashboard.html", {
+        "widget_data": widget_data,
+        "activities": activities,
+        "profile": profile,
+        "section": "dashboard"
+    })
+
+@login_required
+def startup_company_overview(request):
+    profile = request.user.startup_profile
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_company_overview_partial.html", {"profile": profile})
+    else:
+        # return full page with sidebar
+        return render(request, "startup_company_overview.html", {"profile": profile})
+    
+
+@login_required
+def startup_edit_overview(request):
+    profile = request.user.startup_profile
+    if request.method == "POST":
+        profile.startup_name = request.POST.get('startup_name', profile.startup_name)
+        profile.website = request.POST.get('website', profile.website)
+        profile.role = request.POST.get('role', profile.role)
+        profile.startup_stage = request.POST.get('startup_stage', profile.startup_stage)
+        profile.audience = request.POST.get('audience', profile.audience)
+        profile.tech_component = request.POST.get('tech_component', profile.tech_component)
+        profile.your_edge = request.POST.get('your_edge', profile.your_edge)
+        profile.description = request.POST.get('description', profile.description)
+        profile.save()
+        messages.success(request, "Company overview updated.")
+        return redirect("startup_company_overview")
+    return render(request, "startup_edit_overview.html", {"profile": profile})
+
+
+@login_required
+def startup_financial_metrics(request):
+    profile = request.user.startup_profile
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_financial_metrics_partial.html", {"profile": profile})
+    else:
+        # return full page with sidebar
+        return render(request, "startup_financial_metrics.html", {"profile": profile})
+    
+
+@login_required
+def startup_edit_financial_metrics(request):
+    profile = request.user.startup_profile
+    if request.method == "POST":
+        profile.arr = request.POST.get('arr', profile.arr)
+        profile.arpu = request.POST.get('arpu', profile.arpu)
+        profile.monthly_burn = request.POST.get('monthly_burn', profile.monthly_burn)
+        profile.cash_balance = request.POST.get('cash_balance', profile.cash_balance)
+        profile.ltv_cac_ratio = request.POST.get('ltv_cac_ratio', profile.ltv_cac_ratio)
+        profile.operating_expenses = request.POST.get('operating_expenses', profile.operating_expenses)
+        profile.save()
+        messages.success(request, "Financial metrics updated.")
+        return redirect("startup_financial_metrics")
+    return render(request, "startup_financial_metrics.html", {"profile": profile})
+
+@login_required
+def startup_fundraising_status(request):
+    profile = request.user.startup_profile
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_fundraising_status_partial.html", {"profile": profile})
+    else:
+        # return full page with sidebar
+        return render(request, "startup_fundraising_status.html", {"profile": profile})
+    
+
+@login_required
+def startup_edit_fundraising_status(request):
+    profile = request.user.startup_profile
+    if request.method == "POST":
+        profile.currently_raising = request.POST.get('currently_raising', profile.currently_raising)
+        profile.equity_offered = request.POST.get('equity_offered', profile.equity_offered)
+        profile.capital_raised = request.POST.get('capital_raised', profile.capital_raised)
+        profile.debt_obligations = request.POST.get('debt_obligations', profile.debt_obligations)
+        profile.external_funding = request.POST.get('external_funding', profile.external_funding)
+        profile.save()
+        messages.success(request, "Fundraising status updated.")
+        return redirect("startup_fundraising_status")
+    return render(request, "startup_fundraising_status.html", {"profile": profile})
+
+@login_required
+def startup_my_fundraise(request):
+    profile = request.user.startup_profile
+    context = {
+        'currently_raising': profile.currently_raising,
+        'equity_offered': profile.equity_offered,
+        'capital_raised': profile.capital_raised,
+        'pitch_deck_url': profile.pitch_deck_url,
+    }
+
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_my_fundraise_partial.html", context)
+    else:
+        # return full page with sidebar
+        return render(request, "startup_my_fundraise.html", context)
+    
+
+@login_required
+def startup_investor_outreach(request):
+    # For now, mock empty outreach; can be extended to database table later
+    outreach_list = []  # Example: [{'name': 'John Doe', 'firm': 'VC Firm', ...}]
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_investor_outreach_partial.html", {'outreach_list': outreach_list})
+    else:
+        # return full page with sidebar
+        return render(request, "startup_investor_outreach.html", {'outreach_list': outreach_list})
+    
+
+@login_required
+def startup_fundraising_dashboard(request):
+    profile = request.user.startup_profile
+    # In future: load fundraising chart data, now just show main stats
+    context = {
+        'currently_raising': profile.currently_raising,
+        'capital_raised': profile.capital_raised,
+        'equity_offered': profile.equity_offered,
+    }
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_fundraising_dashboard_partial.html", context)
+    else:
+        # return full page with sidebar
+        return render(request, "startup_fundraising_dashboard.html", context)
+    
+
+@login_required
+def startup_round_history(request):
+    profile = request.user.startup_profile
+    # In future: loop through multiple rounds. For now, show current.
+    rounds = [{
+        'type': 'Current',
+        'capital_raised': profile.capital_raised,
+        'equity_offered': profile.equity_offered,
+        'start_date': profile.submitted_at,
+        'pitch_deck_url': profile.pitch_deck_url,
+    }]
+
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_round_history_partial.html", {'rounds': rounds})
+    else:
+        # return full page with sidebar
+        return render(request, "startup_round_history.html", {'rounds': rounds})
+    
+
+@login_required
+def startup_valuation_financials(request):
+    profile = request.user.startup_profile
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_valuation_financials_partial.html", {"profile": profile})
+    else:
+        # return full page with sidebar
+        return render(request, "startup_valuation_financials.html", {"profile": profile})
+    
+
+@login_required
+def startup_cap_table(request):
+    # Get the logged-in startup's cap table
+    startup_profile = request.user.startup_profile
+    cap_entries = CapTableEntry.objects.filter(startup=startup_profile)
+
+    # For demo, if empty, generate fake data (remove in production)
+    if not cap_entries.exists():
+        cap_entries = [
+            {'name': 'Founder 1', 'shares': 4000, 'percent': 40},
+            {'name': 'Founder 2', 'shares': 4000, 'percent': 40},
+            {'name': 'Employee Pool', 'shares': 1000, 'percent': 10},
+            {'name': 'Investor A', 'shares': 1000, 'percent': 10},
+        ]
+        context = {'cap_table': cap_entries}
+    else:
+        context = {
+            'cap_table': [
+                {'name': entry.name, 'shares': entry.shares, 'percent': entry.percent}
+                for entry in cap_entries
+            ]
+        }
+
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "startup_partials/startup_cap_table_partial.html", context)
+    else:
+        # return full page with sidebar
+        return render(request, 'startup_cap_table.html', context)
+    
+    

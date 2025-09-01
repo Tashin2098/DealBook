@@ -2,40 +2,506 @@
 {% load humanize %}
 {% block title %}Fundraising Status{% endblock %}
 {% block content %}
+
 <style>
-    .fundraise-card { background:#fff; border-radius:16px; box-shadow:0 2px 14px #eaeef2; padding:32px 38px 16px 38px; max-width: 600px;}
-    .fundraise-table { width:100%; border-collapse:separate; border-spacing:0 13px;}
-    .fundraise-table th, .fundraise-table td { text-align:left; padding:10px 12px; font-size:1.12rem;}
-    .fundraise-table th { color:#7a819a; font-weight:700;}
-    .fundraise-table td { color:#232845; font-weight:700;}
+    .financial-container {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 16px;
+        box-sizing: border-box;
+    }
+    
+    .page-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f2f5;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin: 0;
+    }
+    
+    .metrics-card {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+        padding: 24px;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 900px;
+        box-sizing: border-box;
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .metrics-card:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .metrics-grid {
+        display: grid;
+        gap: 20px;
+        margin-bottom: 24px;
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+    
+    @media (min-width: 640px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .metrics-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+    }
+    
+    .metric-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px;
+        border: 2px solid #f1f5f9;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #fafbfc;
+        min-height: 120px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .metric-item:hover {
+        border-color: #cbd5e1;
+        background: #ffffff;
+    }
+    
+    .metric-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #374151;
+        margin-bottom: 4px;
+    }
+    
+    .metric-description {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 8px;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        background-color: #ffffff;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+        color: #1a202c;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-input:hover {
+        border-color: #cbd5e1;
+    }
+    
+    .form-input::placeholder {
+        color: #9ca3af;
+        font-weight: 400;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .btn-primary {
+        background: #1a52a4;
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 14px 32px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-primary:hover {
+        background: #164494;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(26, 82, 164, 0.3);
+    }
+    
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    
+    .btn-primary.changed {
+        background: #059669;
+        animation: pulse 2s infinite;
+    }
+    
+    .btn-primary.changed:hover {
+        background: #047857;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+        50% {
+            box-shadow: 0 4px 20px rgba(5, 150, 105, 0.5);
+        }
+    }
+    
+    .icon {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+    
+    .icon-small {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+    }
+    
+    .currency-symbol {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-weight: 600;
+        pointer-events: none;
+    }
+    
+    .currency-input {
+        position: relative;
+    }
+    
+    .currency-input .form-input {
+        padding-left: 32px;
+    }
+    
+    .success-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        z-index: 1000;
+        transform: translateX(400px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .success-message.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    
+    .success-message .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+    }
+    
+    .success-message .close-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 639px) {
+        .financial-container {
+            padding: 12px;
+        }
+        
+        .metrics-card {
+            padding: 20px 16px;
+            margin: 0;
+        }
+        
+        .page-title {
+            font-size: 1.4rem;
+        }
+        
+        .page-header {
+            margin-bottom: 16px;
+        }
+        
+        .metrics-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px;
+        }
+        
+        .metric-item {
+            padding: 14px;
+            min-height: auto;
+        }
+        
+        .form-actions {
+            padding-top: 16px;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .success-message {
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            transform: translateY(-100px);
+        }
+        
+        .success-message.show {
+            transform: translateY(0);
+        }
+    }
+    
+    @media (min-width: 640px) and (max-width: 767px) {
+        .metrics-card {
+            padding: 24px 20px;
+        }
+        
+        .metric-item {
+            min-height: 110px;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .metric-item {
+            min-height: 120px;
+        }
+    }
 </style>
-<h1 style="font-weight:700;margin-bottom:22px;">Fundraising Status</h1>
-<div class="fundraise-card">
-    <form method="POST" action="{% url 'startup_edit_fundraising_status' %}">
-        {% csrf_token %}
-        <table class="fundraise-table">
-            <tr>
-                <th>Currently Raising</th>
-                <td><input type="number" name="currently_raising" value="{{ profile.currently_raising|default_if_none:'' }}" step="0.01" style="width:160px"></td>
-            </tr>
-            <tr>
-                <th>Equity Offered</th>
-                <td><input type="number" name="equity_offered" value="{{ profile.equity_offered|default_if_none:'' }}" step="0.01" style="width:160px"></td>
-            </tr>
-            <tr>
-                <th>Capital Raised</th>
-                <td><input type="number" name="capital_raised" value="{{ profile.capital_raised|default_if_none:'' }}" step="0.01" style="width:160px"></td>
-            </tr>
-            <tr>
-                <th>Debt Obligations</th>
-                <td><input type="text" name="debt_obligations" value="{{ profile.debt_obligations|default_if_none:'' }}" style="width:160px"></td>
-            </tr>
-            <tr>
-                <th>External Funding</th>
-                <td><input type="text" name="external_funding" value="{{ profile.external_funding|default_if_none:'' }}" style="width:160px"></td>
-            </tr>
-        </table>
-        <button type="submit" class="edit-btn">Save Changes</button>
-    </form>
+
+<div class="financial-container">
+    <div class="page-header">
+        <svg class="icon" viewBox="0 0 24 24">
+            <path d="M14 6V4h-4v2h4zM4 8v11h16V8H4zm16-2c1.11 0 2 .89 2 2v11c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2l.01-11c0-1.11.88-2 1.99-2h4V4c0-1.11.89-2 2-2h4c1.11 0 2 .89 2 2v2h4z"/>
+        </svg>
+        <h1 class="page-title">Fundraising Status</h1>
+    </div>
+
+    <div class="metrics-card">
+        <form method="POST" action="{% url 'startup_edit_fundraising_status' %}" id="fundraisingForm">
+            {% csrf_token %}
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <div class="metric-label">
+                        <svg class="icon-small" viewBox="0 0 24 24">
+                            <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                        </svg>
+                        Currently Raising
+                    </div>
+                    <div class="metric-description">Amount currently seeking to raise</div>
+                    <div class="currency-input">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" name="currently_raising" value="{{ profile.currently_raising|default_if_none:'' }}" step="0.01" class="form-input" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="metric-item">
+                    <div class="metric-label">
+                        <svg class="icon-small" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                        Equity Offered
+                    </div>
+                    <div class="metric-description">Percentage of equity being offered (%)</div>
+                    <input type="number" name="equity_offered" value="{{ profile.equity_offered|default_if_none:'' }}" step="0.01" class="form-input" placeholder="0.0">
+                </div>
+
+                <div class="metric-item">
+                    <div class="metric-label">
+                        <svg class="icon-small" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                        </svg>
+                        Capital Raised
+                    </div>
+                    <div class="metric-description">Total capital raised to date</div>
+                    <div class="currency-input">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" name="capital_raised" value="{{ profile.capital_raised|default_if_none:'' }}" step="0.01" class="form-input" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="metric-item">
+                    <div class="metric-label">
+                        <svg class="icon-small" viewBox="0 0 24 24">
+                            <path d="M14 6V4h-4v2h4zM4 8v11h16V8H4zm16-2c1.11 0 2 .89 2 2v11c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2l.01-11c0-1.11.88-2 1.99-2h4V4c0-1.11.89-2 2-2h4c1.11 0 2 .89 2 2v2h4z"/>
+                        </svg>
+                        Debt Obligations
+                    </div>
+                    <div class="metric-description">Outstanding debt or obligations</div>
+                    <input type="text" name="debt_obligations" value="{{ profile.debt_obligations|default_if_none:'' }}" class="form-input" placeholder="Enter debt obligations">
+                </div>
+
+                <div class="metric-item">
+                    <div class="metric-label">
+                        <svg class="icon-small" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        External Funding
+                    </div>
+                    <div class="metric-description">Sources of external funding</div>
+                    <input type="text" name="external_funding" value="{{ profile.external_funding|default_if_none:'' }}" class="form-input" placeholder="Enter funding sources">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary" id="saveBtn">
+                    <svg class="icon-small" viewBox="0 0 24 24">
+                        <path d="M17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 6h9v4H6z"/>
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<!-- Success Message Toast -->
+<div id="successMessage" class="success-message">
+    <svg class="icon-small" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.58L19 8l-9 9z"/>
+    </svg>
+    <span>Fundraising status saved successfully!</span>
+    <button class="close-btn" onclick="hideSuccessMessage()">
+        <svg class="icon-small" viewBox="0 0 24 24">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+    </button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('fundraisingForm');
+    const saveBtn = document.getElementById('saveBtn');
+    const inputs = form.querySelectorAll('input');
+    
+    // Store original values after page load
+    const originalValues = {};
+    
+    // Initialize original values
+    setTimeout(() => {
+        inputs.forEach((input, index) => {
+            originalValues[index] = input.value || '';
+        });
+    }, 100);
+    
+    function checkForChanges() {
+        let hasChanges = false;
+        
+        inputs.forEach((input, index) => {
+            const originalValue = originalValues[index] || '';
+            const currentValue = input.value || '';
+            
+            if (originalValue !== currentValue) {
+                hasChanges = true;
+            }
+        });
+        
+        if (hasChanges) {
+            saveBtn.classList.add('changed');
+        } else {
+            saveBtn.classList.remove('changed');
+        }
+    }
+    
+    // Check for changes on input
+    inputs.forEach(input => {
+        input.addEventListener('input', checkForChanges);
+        input.addEventListener('change', checkForChanges);
+        input.addEventListener('keyup', checkForChanges);
+    });
+    
+    // Handle form submission for success message
+    form.addEventListener('submit', function(e) {
+        // Don't prevent default - let Django handle the submission
+        // Just show the success message after a short delay
+        setTimeout(showSuccessMessage, 500);
+    });
+});
+
+function showSuccessMessage() {
+    const message = document.getElementById('successMessage');
+    message.classList.add('show');
+    
+    // Auto-hide after 5 seconds
+    setTimeout(hideSuccessMessage, 5000);
+}
+
+function hideSuccessMessage() {
+    const message = document.getElementById('successMessage');
+    message.classList.remove('show');
+}
+
+// Show success message if page was redirected back after save
+window.addEventListener('load', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('saved') === 'true') {
+        setTimeout(showSuccessMessage, 300);
+        // Clean up URL without reloading
+        if (history.replaceState) {
+            const cleanUrl = window.location.pathname;
+            history.replaceState({}, '', cleanUrl);
+        }
+    }
+});
+</script>
+
 {% endblock %}
