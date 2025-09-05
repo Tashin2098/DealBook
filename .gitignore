@@ -1,0 +1,24 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.env
+.env.*
+
+# Django local database
+db.sqlite3
+
+# Static build dirs
+staticfiles/
+staticfiles_build/
+
+# IDE/Editor configs
+.vscode/
+.idea/
+*.swp
+
+# OS junk
+.DS_Store
+Thumbs.db
