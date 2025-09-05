@@ -1,0 +1,364 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-actions a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn.black {
+            background: #000;
+            color: #fff;
+        }
+
+        .btn.black:hover {
+            background: #333;
+        }
+
+        .btn:not(.black) {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn:not(.black):hover {
+            background: #f5f5f5;
+        }
+
+        .btn.disabled {
+            background: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .center-content {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .incubator-label {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .center-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #000;
+        }
+
+        .desc {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.5;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .small {
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        .small a {
+            color: #666;
+        }
+
+        /* Category Row */
+        .category-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .category-row span {
+            background: #f8f8f8;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        /* Cards Section */
+        .cards-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 3rem 0;
+        }
+
+        .card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            text-align: left;
+        }
+
+        .card strong {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #000;
+        }
+
+
+
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Split Section */
+        .split-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 3rem 0;
+        }
+
+        .split-card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .split-card strong {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #000;
+        }
+
+        .split-card ul {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .split-card li {
+            padding: 0.4rem 0;
+            color: #666;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .split-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #666;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 3rem 0;
+        }
+
+        .testimonial-card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .testimonial-card strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #000;
+        }
+
+        .testimonial-card p {
+            color: #666;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .testimonial-card small {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: #000;
+            color: #fff;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-banner h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-banner p {
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+
+        .cta-banner .btn {
+            margin: 0 0.5rem;
+        }
+
+        .cta-banner .btn.black {
+            background: #fff;
+            color: #000;
+        }
+
+        .cta-banner .btn.black:hover {
+            background: #f5f5f5;
+        }
+
+        /* Footer */
+        footer {
+            background: #fff;
+            border-top: 1px solid #eee;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        footer nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        footer nav a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        footer nav a:hover {
+            color: #000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .center-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .split-section {
+                grid-template-columns: 1fr;
+            }
+
+            .category-row {
+                gap: 1rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+
+            main {
+                padding: 0 1rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
