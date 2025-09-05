@@ -1,0 +1,21 @@
+{% extends "investor_base.html" %}
+{% block content %}
+<h1>Active Investments</h1>
+{% if investments %}
+<table>
+  <tr>
+    <th>Startup</th><th>Amount</th><th>Equity (%)</th><th>Date</th>
+  </tr>
+  {% for inv in investments %}
+  <tr>
+    <td>{{ inv.startup.startup_name }}</td>
+    <td>${{ inv.amount|floatformat:2 }}</td>
+    <td>{{ inv.equity|floatformat:2 }}</td>
+    <td>{{ inv.date_invested|date:"M d, Y" }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+  <div>No active investments yet.</div>
+{% endif %}
+{% endblock %}

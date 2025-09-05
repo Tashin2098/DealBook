@@ -1,0 +1,13 @@
+{% extends "investor_base.html" %}
+{% block title %}Invest in Company{% endblock %}
+{% block content %}
+<h2>Invest in {{ startup.startup_name }}</h2>
+<form method="POST">
+    {% csrf_token %}
+    <label>Amount (USD):</label><br>
+    <input type="number" name="amount" step="0.01" required style="padding:6px; margin-bottom:16px; border-radius:6px;"><br>
+    <label>Notes (optional):</label><br>
+    <textarea name="notes" style="width:350px; height:80px; border-radius:8px; padding:7px;"></textarea><br>
+    <button type="submit" style="padding:8px 18px; border-radius:8px; background:#1a52a4; color:#fff; border:none; font-size:1.12em;">Invest</button>
+</form>
+{% endblock %}

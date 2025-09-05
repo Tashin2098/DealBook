@@ -6,9 +6,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import StartupProfile
+from .models import StartupProfile, InvestorProfile, InvestorCompanySave, InvestorInvestment
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import StartupProfile,InvestorProfile, CapTableEntry
 
@@ -369,11 +370,18 @@ def investor_onboard_complete(request):
     profile = InvestorProfile.objects.filter(user=request.user).first()
     is_approved = profile.is_approved if profile else False
     user_name = request.user.first_name
+
+    if is_approved:
+        # If approved, redirect to dashboard
+        return redirect("investor_dashboard")
+
+    # Otherwise show submitted/pending page
     context = {
         "is_approved": is_approved,
         "user_name": user_name,
     }
     return render(request, "investor_onboarding_complete.html", context)
+
 
 @staff_member_required
 def investor_users_admin(request):
@@ -642,4 +650,130 @@ def startup_cap_table(request):
         # return full page with sidebar
         return render(request, 'startup_cap_table.html', context)
     
-    
+@login_required
+def investor_dashboard(request):
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    if not investor_profile:
+        return redirect('investor_onboarding')
+
+    investments = InvestorInvestment.objects.filter(investor=investor_profile)
+    saved_count = InvestorCompanySave.objects.filter(investor=request.user).count()  # If still FK to User
+    # If you also updated InvestorCompanySave to use InvestorProfile:
+    # saved_count = InvestorCompanySave.objects.filter(investor=investor_profile).count()
+
+    return render(request, "investor_dashboard.html", {
+        "section": "dashboard",
+        "investments": investments,
+        "saved_count": saved_count
+    })
+
+@login_required
+def investor_company_overview(request):
+    profile = getattr(request.user, 'investor_profile', None)
+    return render(request, "investor_company_overview.html", {
+        "profile": profile,
+        "section": "company"
+    })
+
+# ---------------- Deal Discovery ----------------
+@login_required
+def browse_companies(request):
+    # Get InvestorProfile object for this user (required for InvestorInvestment)
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    startups = StartupProfile.objects.filter(is_onboarded=True)
+
+    # For saves: filter with User (request.user)
+    saved = set(
+        InvestorCompanySave.objects.filter(investor=request.user)
+        .values_list('startup_id', flat=True)
+    )
+
+    # For investments: filter with InvestorProfile
+    invested = set()
+    if investor_profile:
+        invested = set(
+            InvestorInvestment.objects.filter(investor=investor_profile)
+            .values_list('startup_id', flat=True)
+        )
+
+    return render(request, "browse_companies.html", {
+        "section": "deal_discovery",
+        "subsection": "browse_companies",
+        "startups": startups,
+        "saved": saved,
+        "invested": invested,
+    })
+
+
+
+@login_required
+def save_company(request, startup_id):
+    startup = get_object_or_404(StartupProfile, pk=startup_id)
+    InvestorCompanySave.objects.get_or_create(investor=request.user, startup=startup)
+    return redirect('browse_companies')
+
+@login_required
+def saved_companies(request):
+    saves = InvestorCompanySave.objects.filter(investor=request.user).select_related('startup')
+    return render(request, "saved_companies.html", {
+        "section": "deal_discovery",
+        "subsection": "saved_companies",
+        "saves": saves
+    })
+
+@login_required
+def invest_in_company(request, startup_id):
+    startup = get_object_or_404(StartupProfile, pk=startup_id)
+    if request.method == "POST":
+        amount = request.POST.get("amount", "")
+        notes = request.POST.get("notes", "")
+        InvestorInvestment.objects.create(investor=request.user, startup=startup, amount=amount, notes=notes)
+        return redirect('browse_companies')
+    return render(request, "invest_in_company.html", {
+        "startup": startup,
+    })
+
+@login_required
+def investment_pipeline(request):
+    investments = InvestorInvestment.objects.filter(investor=request.user)
+    return render(request, "investment_pipeline.html", {
+        "investments": investments
+    })
+
+@login_required
+def sector_analysis(request):
+    # Placeholder page
+    return render(request, "sector_analysis.html", {})
+
+# ----------- Investment Management ------------
+@login_required
+def active_investments(request):
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    if not investor_profile:
+        # Optionally redirect to onboarding or error
+        return redirect('investor_onboarding')
+
+    investments = InvestorInvestment.objects.filter(
+        investor=investor_profile,
+        is_active=True
+    ).select_related('startup').order_by('-invested_at')
+    return render(request, "active_investments.html", {
+        "investments": investments,
+        "section": "investment_management",
+        "subsection": "active_investments",
+    })
+
+@login_required
+def investments_history(request):
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    if not investor_profile:
+        return redirect('investor_onboarding')
+
+    investments = InvestorInvestment.objects.filter(
+        investor=investor_profile
+    ).select_related('startup').order_by('-invested_at')
+    return render(request, "investments_history.html", {
+        "investments": investments,
+        "section": "investment_management",
+        "subsection": "investments_history",
+    })

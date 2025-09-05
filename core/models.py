@@ -113,3 +113,21 @@ class CapTableEntry(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.percent}%"
+    
+
+class InvestorCompanySave(models.Model):
+    investor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="saved_companies")
+    startup = models.ForeignKey(StartupProfile, on_delete=models.CASCADE)
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("investor", "startup")  # Prevent double saving
+
+class InvestorInvestment(models.Model):
+    investor = models.ForeignKey(InvestorProfile, on_delete=models.CASCADE, related_name="investments")
+    startup = models.ForeignKey(StartupProfile, on_delete=models.CASCADE)
+    amount = models.FloatField(null=True, blank=True)
+    equity = models.FloatField(null=True, blank=True)
+    invested_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
