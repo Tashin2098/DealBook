@@ -123,6 +123,7 @@ class InvestorCompanySave(models.Model):
     class Meta:
         unique_together = ("investor", "startup")  # Prevent double saving
 
+# models.py
 class InvestorInvestment(models.Model):
     investor = models.ForeignKey(InvestorProfile, on_delete=models.CASCADE, related_name="investments")
     startup = models.ForeignKey(StartupProfile, on_delete=models.CASCADE)
@@ -130,4 +131,19 @@ class InvestorInvestment(models.Model):
     equity = models.FloatField(null=True, blank=True)
     invested_at = models.DateTimeField(auto_now_add=True)
     notes = models.TextField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)  # Keep for backwards compatibility
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Active'),
+        ('rejected', 'Rejected'),
+    ]
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='pending')  # NEW
+
+    def __str__(self):
+        return f"{self.investor} invested in {self.startup} (${self.amount}) - {self.status}"
+
+class StartupDocument(models.Model):
+    startup = models.ForeignKey(StartupProfile, on_delete=models.CASCADE, related_name='documents')
+    title = models.CharField(max_length=100)
+    file = models.FileField(upload_to='startup_docs/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)

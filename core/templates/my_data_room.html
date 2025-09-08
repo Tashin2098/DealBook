@@ -1,0 +1,21 @@
+{% extends "investor_base.html" %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">My Data Room</h2>
+<table class="w-full bg-white rounded shadow">
+    <thead>
+        <tr><th>Startup</th><th>Title</th><th>File</th><th>Uploaded</th></tr>
+    </thead>
+    <tbody>
+    {% for doc in docs %}
+        <tr>
+            <td>{{ doc.startup.startup_name }}</td>
+            <td>{{ doc.title }}</td>
+            <td><a href="{{ doc.file.url }}" target="_blank" class="text-blue-500">Download</a></td>
+            <td>{{ doc.uploaded_at|date:"M d, Y" }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="4" class="text-center text-gray-400 py-6">No documents yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

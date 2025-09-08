@@ -1,0 +1,19 @@
+{% extends "investor_base.html" %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Sector Analysis</h2>
+<table class="w-1/2 mx-auto bg-white rounded shadow">
+    <thead>
+        <tr><th>Sector</th><th># of Startups</th></tr>
+    </thead>
+    <tbody>
+    {% for sector, count in sector_counts.items %}
+        <tr>
+            <td>{{ sector }}</td>
+            <td>{{ count }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="2" class="text-center text-gray-400 py-6">No data available.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

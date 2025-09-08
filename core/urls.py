@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import hello_world, homepage, login_view, signup_view, post_login_view, admin_dashboard, onboarding_view, investor_onboarding, startup_onboard_step1, startup_onboard_step2, startup_onboard_step3, startup_onboard_step4, startup_onboard_step5, startup_onboard_complete, admin_users_view, startup_users_admin, toggle_startup_status, startup_complete_profile_step1, startup_complete_profile_step2, startup_onboard_pending, startup_dashboard, startup_company_overview, startup_edit_overview, startup_financial_metrics, startup_edit_financial_metrics, startup_fundraising_status, startup_edit_fundraising_status, startup_my_fundraise, startup_investor_outreach, startup_fundraising_dashboard, startup_round_history, startup_cap_table, startup_valuation_financials, investor_users_admin, toggle_investor_status, investor_dashboard, investor_company_overview, browse_companies, save_company, invest_in_company, saved_companies, investment_pipeline, sector_analysis, active_investments, investments_history
+from .views import hello_world, homepage, login_view, signup_view, post_login_view, admin_dashboard, onboarding_view, investor_onboarding, startup_onboard_step1, startup_onboard_step2, startup_onboard_step3, startup_onboard_step4, startup_onboard_step5, startup_onboard_complete, admin_users_view, startup_users_admin, toggle_startup_status, startup_complete_profile_step1, startup_complete_profile_step2, startup_onboard_pending, startup_dashboard, startup_company_overview, startup_edit_overview, startup_financial_metrics, startup_edit_financial_metrics, startup_fundraising_status, startup_edit_fundraising_status, startup_my_fundraise, startup_investor_outreach, startup_fundraising_dashboard, startup_round_history, startup_cap_table, startup_valuation_financials, investor_users_admin, toggle_investor_status, investor_dashboard, investor_company_overview, browse_companies, save_company, invest_in_company, saved_companies, investment_pipeline, sector_analysis, active_investments, investments_history, my_data_room, analytics_dashboard
 from django.contrib.auth import views as auth_views
 from .views import hello_world, homepage, login_view, signup_view, post_login_view, admin_dashboard, onboarding_view, investor_onboarding,investor_onboard,investor_onboard_complete, startup_onboard_step1, startup_onboard_step2, startup_onboard_step3, startup_onboard_step4, startup_onboard_step5, startup_onboard_complete
 
@@ -64,6 +64,10 @@ urlpatterns = [
     path('investor/deal-discovery/sector-analysis/', sector_analysis, name='sector_analysis'),
     path('investor/investments/active/', active_investments, name='active_investments'),
     path('investor/investments/history/', investments_history, name='investments_history'),
+     path('investor/portfolio-analytics/dashboard/', analytics_dashboard, name="analytics_dashboard"),
+
+    # --- Data Room Access ---
+    path('investor/data-room/my/', my_data_room, name="my_data_room"),
 
 
 

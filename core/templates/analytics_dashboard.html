@@ -1,0 +1,34 @@
+{% extends "investor_base.html" %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Portfolio Analytics Dashboard</h2>
+<div class="grid grid-cols-3 gap-4 mb-8">
+  <div class="p-4 bg-white shadow rounded text-center">
+    <div class="text-gray-500">Total Invested</div>
+    <div class="text-2xl font-bold">${{ total_invested|floatformat:0 }}</div>
+  </div>
+  <div class="p-4 bg-white shadow rounded text-center">
+    <div class="text-gray-500">Total Est. ROI</div>
+    <div class="text-2xl font-bold">${{ total_roi|floatformat:0 }}</div>
+  </div>
+  <div class="p-4 bg-white shadow rounded text-center">
+    <div class="text-gray-500"># of Investments</div>
+    <div class="text-2xl font-bold">{{ num_investments }}</div>
+  </div>
+</div>
+<h3 class="text-lg font-semibold mb-2">Top Investments</h3>
+<table class="w-full bg-white rounded shadow mb-6">
+    <thead>
+        <tr><th>Startup</th><th>Amount</th></tr>
+    </thead>
+    <tbody>
+    {% for inv in top_startups %}
+        <tr>
+            <td>{{ inv.startup.startup_name }}</td>
+            <td>${{ inv.amount|floatformat:0 }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="2" class="text-center text-gray-400 py-6">No investments yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

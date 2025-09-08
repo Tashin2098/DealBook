@@ -6,11 +6,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import StartupProfile, InvestorProfile, InvestorCompanySave, InvestorInvestment
+from .models import StartupProfile, InvestorProfile, InvestorCompanySave, InvestorInvestment, StartupDocument
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
-
+from collections import Counter
 from .models import StartupProfile,InvestorProfile, CapTableEntry
 
 
@@ -743,6 +743,7 @@ def invest_in_company(request, startup_id):
             amount=amount or None,
             equity=equity or None,
             notes=notes or "",
+            status="pending"
         )
         messages.success(request, "Investment successfully recorded!")
         return redirect('browse_companies')
@@ -761,15 +762,35 @@ def invest_in_company(request, startup_id):
 
 @login_required
 def investment_pipeline(request):
-    investments = InvestorInvestment.objects.filter(investor=request.user)
+    # Show investments where is_active=True (not completed)
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    if not investor_profile:
+        return redirect('investor_onboarding')
+    pipeline = InvestorInvestment.objects.filter(
+        investor=investor_profile,
+        is_active=True
+    ).select_related('startup').order_by('-invested_at')
     return render(request, "investment_pipeline.html", {
-        "investments": investments
+        "pipeline": pipeline,
+        "section": "deal_discovery",
+        "subsection": "investment_pipeline"
     })
 
 @login_required
 def sector_analysis(request):
-    # Placeholder page
-    return render(request, "sector_analysis.html", {})
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    # All startups invested in:
+    invested_ids = InvestorInvestment.objects.filter(investor=investor_profile).values_list('startup_id', flat=True)
+    saved_ids = InvestorCompanySave.objects.filter(investor=request.user).values_list('startup_id', flat=True)
+    all_startup_ids = list(invested_ids) + list(saved_ids)
+    startups = StartupProfile.objects.filter(id__in=all_startup_ids)
+    sectors = [s.tech_component or "Unknown" for s in startups]  # Change to your actual field!
+    sector_counts = dict(Counter(sectors))
+    return render(request, "sector_analysis.html", {
+        "sector_counts": sector_counts,
+        "section": "deal_discovery",
+        "subsection": "sector_analysis"
+    })
 
 # ----------- Investment Management ------------
 @login_required
@@ -781,7 +802,8 @@ def active_investments(request):
 
     investments = InvestorInvestment.objects.filter(
         investor=investor_profile,
-        is_active=True
+        is_active=True,
+        status__in=['pending', 'approved']
     ).select_related('startup').order_by('-invested_at')
     return render(request, "active_investments.html", {
         "investments": investments,
@@ -802,4 +824,34 @@ def investments_history(request):
         "investments": investments,
         "section": "investment_management",
         "subsection": "investments_history",
+    })
+
+@login_required
+def analytics_dashboard(request):
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    investments = InvestorInvestment.objects.filter(investor=investor_profile)
+    total_invested = sum(inv.amount or 0 for inv in investments)
+    total_roi = sum(((inv.startup.arr or 0) * (inv.startup.equity_offered or 0)/100) for inv in investments)  # Example calc
+    num_investments = investments.count()
+    top_startups = investments.order_by('-amount')[:3]
+    return render(request, "analytics_dashboard.html", {
+        "total_invested": total_invested,
+        "total_roi": total_roi,
+        "num_investments": num_investments,
+        "top_startups": top_startups,
+        "section": "portfolio_analytics",
+        "subsection": "analytics_dashboard"
+    })
+
+@login_required
+def my_data_room(request):
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    invested_ids = InvestorInvestment.objects.filter(investor=investor_profile).values_list('startup_id', flat=True)
+    saved_ids = InvestorCompanySave.objects.filter(investor=request.user).values_list('startup_id', flat=True)
+    all_startup_ids = list(invested_ids) + list(saved_ids)
+    docs = StartupDocument.objects.filter(startup__id__in=all_startup_ids).select_related('startup').order_by('-uploaded_at')
+    return render(request, "my_data_room.html", {
+        "docs": docs,
+        "section": "data_room_access",
+        "subsection": "my_data_room"
     })

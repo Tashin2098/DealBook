@@ -91,13 +91,63 @@
     <div class="mt-4 text-center text-gray-700 text-xs">
       Total Required Investment: $<span id="total_required">{{ default_investment|floatformat:0 }}</span> for <span id="total_equity">{{ default_equity|floatformat:0 }}</span>% equity.
     </div>
+    <!-- Invest Now Button -->
+    <div class="flex justify-center mt-8">
+      <button id="investNowBtn"
+              class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg text-lg transition">
+        Invest Now
+      </button>
+    </div>
   </div>
 </div>
 
-<!-- Calculation Script: -->
+<!-- Invest Now Modal -->
+<div id="investModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl p-8 shadow-xl w-full max-w-md">
+    <h3 class="text-xl font-bold mb-4 gold-text">Confirm Investment</h3>
+    <form id="investForm" method="POST" action="{% url 'invest_in_company' startup.id %}">
+      {% csrf_token %}
+      <div class="mb-4">
+        <label class="block font-semibold mb-1">Investment Amount ($)</label>
+        <input 
+          type="number" 
+          name="amount" 
+          id="input_investment"
+          value="{{ default_investment }}"
+          class="w-full border rounded p-2" 
+          required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold mb-1">Equity (%)</label>
+        <input 
+          type="number" 
+          name="equity" 
+          id="input_equity"
+          value="{{ default_equity }}"
+          step="0.1"
+          class="w-full border rounded p-2" 
+          required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold mb-1">Notes (optional)</label>
+        <textarea 
+          name="notes"
+          rows="2"
+          class="w-full border rounded p-2"
+        ></textarea>
+      </div>
+      <div class="flex gap-4 justify-end">
+        <button type="button" id="cancelModalBtn" class="px-4 py-2 rounded border text-gray-500 hover:bg-gray-100">Cancel</button>
+        <button type="submit" class="px-6 py-2 rounded bg-yellow-600 text-white font-bold hover:bg-yellow-700">Confirm Investment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 function intComma(x) { return x.toLocaleString(); }
-
 function calculate() {
     let users = parseInt(document.getElementById('users_slider').value);
     let conversion = parseFloat(document.getElementById('conversion_slider').value) / 100;
@@ -105,14 +155,12 @@ function calculate() {
     let equity = parseFloat(document.getElementById('init_equity').value) / 100;
     let investment = parseFloat(document.getElementById('init_investment').value);
 
-    // Update displays
     document.getElementById('users_display').innerText = intComma(users);
     document.getElementById('conversion_value').innerText = Math.round(conversion*100) + "%";
     document.getElementById('avg_txn_value').innerText = "$" + intComma(avg_txn);
 
     let company_revenue = users * conversion * avg_txn;
     document.getElementById('company_revenue').innerText = "$" + intComma(Math.round(company_revenue));
-
     let investor_profit = company_revenue * equity;
     document.getElementById('roi_dollar').innerText = "$" + intComma(Math.round(investor_profit));
     let roi_percent = investment > 0 ? (investor_profit / investment * 100) : 0;
@@ -120,20 +168,28 @@ function calculate() {
     document.getElementById('roi_percent').innerText = roi_percent.toFixed(1) + "%";
     document.getElementById('roi_multiple').innerText = roi_multiple + "x";
 }
-
-// Reset function for the Reset button
 function resetToDefault() {
     document.getElementById('users_slider').value = {{ default_users }};
     document.getElementById('conversion_slider').value = {{ default_conversion }};
     document.getElementById('avg_txn_slider').value = {{ default_avg_txn }};
     calculate();
 }
-
 document.addEventListener("DOMContentLoaded", function(){
     ["users_slider", "conversion_slider", "avg_txn_slider"].forEach(function(id){
         document.getElementById(id).addEventListener("input", calculate);
     });
     calculate();
+
+    // Modal logic
+    document.getElementById('investNowBtn').onclick = function() {
+      // Fill modal with latest values
+      document.getElementById('input_investment').value = document.getElementById('init_investment').value;
+      document.getElementById('input_equity').value = document.getElementById('init_equity').value;
+      document.getElementById('investModal').classList.remove('hidden');
+    }
+    document.getElementById('cancelModalBtn').onclick = function() {
+      document.getElementById('investModal').classList.add('hidden');
+    }
 });
 </script>
 <!-- Hidden initial data -->

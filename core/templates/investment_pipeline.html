@@ -1,0 +1,24 @@
+{% extends "investor_base.html" %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Investment Pipeline</h2>
+<table class="w-full bg-white rounded shadow">
+    <thead>
+        <tr>
+            <th>Startup</th><th>Amount</th><th>Status</th><th>Date</th><th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for inv in pipeline %}
+        <tr>
+            <td>{{ inv.startup.startup_name }}</td>
+            <td>${{ inv.amount|floatformat:0 }}</td>
+            <td>{% if inv.is_active %} In Pipeline {% else %} Completed {% endif %}</td>
+            <td>{{ inv.invested_at|date:"M d, Y" }}</td>
+            <td>{{ inv.notes|default:"—" }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5" class="text-center text-gray-400 py-6">No active pipeline investments yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
