@@ -57,7 +57,8 @@ urlpatterns = [
     # --- Deal Discovery Section ---
     path('investor/deal-discovery/browse/', browse_companies, name='browse_companies'),
     path('investor/deal-discovery/save/<int:startup_id>/', save_company, name='save_company'),
-    path('investor/deal-discovery/invest/<int:startup_id>/', invest_in_company, name='invest_in_company'),
+    path('investor/deal-discovery/invest/<int:startup_id>/', invest_in_company, name="invest_in_company"),
+
     path('investor/deal-discovery/saved/', saved_companies, name='saved_companies'),
     path('investor/deal-discovery/pipeline/', investment_pipeline, name='investment_pipeline'),
     path('investor/deal-discovery/sector-analysis/', sector_analysis, name='sector_analysis'),

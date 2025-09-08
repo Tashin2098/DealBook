@@ -723,15 +723,41 @@ def saved_companies(request):
 
 @login_required
 def invest_in_company(request, startup_id):
+    investor_profile = getattr(request.user, 'investor_profile', None)
+    if not investor_profile:
+        # Optional: Show error or redirect to onboarding
+        return redirect('investor_onboarding')
+
     startup = get_object_or_404(StartupProfile, pk=startup_id)
+
     if request.method == "POST":
-        amount = request.POST.get("amount", "")
-        notes = request.POST.get("notes", "")
-        InvestorInvestment.objects.create(investor=request.user, startup=startup, amount=amount, notes=notes)
+        amount = request.POST.get("amount")
+        equity = request.POST.get("equity")
+        notes = request.POST.get("notes")
+        # Add any other form values you want to save!
+
+        # Create the investment
+        InvestorInvestment.objects.create(
+            investor=investor_profile,
+            startup=startup,
+            amount=amount or None,
+            equity=equity or None,
+            notes=notes or "",
+        )
+        messages.success(request, "Investment successfully recorded!")
         return redirect('browse_companies')
-    return render(request, "invest_in_company.html", {
+
+    context = {
         "startup": startup,
-    })
+        "default_equity": startup.equity_offered,        # from model
+        "default_investment": startup.currently_raising,
+        "default_users": 70000,
+        "default_conversion": 39,
+        "default_avg_txn": 100,
+        "default_roi_display": "yearly",
+    }
+    return render(request, "invest_in_company.html", context)
+
 
 @login_required
 def investment_pipeline(request):

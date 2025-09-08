@@ -1,13 +1,143 @@
 {% extends "investor_base.html" %}
-{% block title %}Invest in Company{% endblock %}
+{% load humanize %}
 {% block content %}
-<h2>Invest in {{ startup.startup_name }}</h2>
-<form method="POST">
-    {% csrf_token %}
-    <label>Amount (USD):</label><br>
-    <input type="number" name="amount" step="0.01" required style="padding:6px; margin-bottom:16px; border-radius:6px;"><br>
-    <label>Notes (optional):</label><br>
-    <textarea name="notes" style="width:350px; height:80px; border-radius:8px; padding:7px;"></textarea><br>
-    <button type="submit" style="padding:8px 18px; border-radius:8px; background:#1a52a4; color:#fff; border:none; font-size:1.12em;">Invest</button>
-</form>
+
+<!-- Tailwind CSS & Google Fonts (for this page only) -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  body, .font-sans {
+    font-family: 'Montserrat', 'Arial', sans-serif !important;
+    background: #faf9f6;
+  }
+  .gold-bg { background: #B28D4B !important; }
+  .gold-text { color: #B28D4B !important; }
+  .gold-slider::-webkit-slider-thumb { background: #B28D4B !important; }
+  /* For Firefox */
+  input[type=range]::-moz-range-thumb { background: #B28D4B !important; }
+  /* For IE */
+  input[type=range]::-ms-thumb { background: #B28D4B !important; }
+</style>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-8">
+  <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl px-10 py-8 overflow-y-auto" style="max-height: 90vh;">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+      <h2 class="text-3xl font-bold tracking-tight gold-text mb-2 md:mb-0">Investment Calculator</h2>
+      <button type="button" onclick="resetToDefault()" class="border px-4 py-2 rounded gold-text border-yellow-700 hover:bg-yellow-50 transition">Reset to Default</button>
+    </div>
+    <p class="text-center text-gray-500 mb-6">Estimate your return on investment based on key parameters.</p>
+    <!-- Top Parameters -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div>
+        <div class="text-sm text-gray-500">Equity Share</div>
+        <div id="equity_share_display" class="text-4xl font-extrabold gold-text">{{ default_equity|floatformat:0 }}%</div>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">Investment Amount</div>
+        <div id="investment_amount_display" class="text-4xl font-extrabold">${{ default_investment|floatformat:0 }}</div>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">Number of Users</div>
+        <div id="users_display" class="text-4xl font-extrabold">{{ default_users|floatformat:0 }}</div>
+      </div>
+    </div>
+    <!-- User Slider -->
+    <div class="mb-6">
+      <label class="block text-gray-700 font-bold mb-2">Number of user accounts</label>
+      <input id="users_slider" type="range" min="0" max="2000000" step="10000" value="{{ default_users }}" class="w-full gold-bg h-2 rounded-lg appearance-none cursor-pointer">
+      <div class="flex justify-between text-xs text-gray-400 mt-1">
+        <span>0</span><span>500k</span><span>1m</span><span>1.5m</span><span>2m</span>
+      </div>
+      <div class="text-xs text-gray-400 mt-1">recommended 500k</div>
+    </div>
+    <!-- Estimate Parameters -->
+    <div class="bg-gray-50 border rounded-lg p-4 mb-4">
+      <h4 class="font-bold mb-2">Estimate Parameters</h4>
+      <div class="mb-5">
+        <div class="flex justify-between">
+          <label class="block text-gray-700 font-bold">Conversion Rate</label>
+          <span id="conversion_value" class="font-bold gold-text"></span>
+        </div>
+        <input id="conversion_slider" type="range" min="10" max="100" step="1" value="{{ default_conversion }}" class="w-full gold-bg h-2 rounded-lg appearance-none cursor-pointer">
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>10%</span><span>30%</span><span>50%</span><span>70%</span><span>100%</span>
+        </div>
+        <div class="text-xs text-gray-400 mt-1">recommended: 30%-50%</div>
+      </div>
+      <div>
+        <div class="flex justify-between">
+          <label class="block text-gray-700 font-bold">Avg Transaction Value</label>
+          <span id="avg_txn_value" class="font-bold gold-text"></span>
+        </div>
+        <input id="avg_txn_slider" type="range" min="50" max="500" step="10" value="{{ default_avg_txn }}" class="w-full gold-bg h-2 rounded-lg appearance-none cursor-pointer">
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>$50</span><span>$150</span><span>$250</span><span>$350</span><span>$500</span>
+        </div>
+        <div class="text-xs text-gray-400 mt-1">recommended $100</div>
+      </div>
+    </div>
+    <!-- ROI Card -->
+    <div class="bg-yellow-50 border-l-8 border-yellow-700 rounded-xl shadow-md p-8 mb-4 flex flex-col items-center">
+      <div class="text-gray-500 font-semibold mb-1">Equity in {{ startup.startup_name }}</div>
+      <div id="roi_dollar" class="text-5xl font-black gold-text mb-1">$0</div>
+      <div class="text-sm text-gray-700">Your Estimated Annual ROI</div>
+      <div class="text-gray-500 text-sm"><span id="roi_percent">0%</span> | <span id="roi_multiple">0x</span></div>
+    </div>
+    <!-- Company Revenue -->
+    <div class="text-center mb-3 text-gray-500">
+      Est Company Annual Revenue: <span id="company_revenue" class="font-bold gold-text">$0</span>
+    </div>
+    <div class="mt-4 text-center text-gray-700 text-xs">
+      Total Required Investment: $<span id="total_required">{{ default_investment|floatformat:0 }}</span> for <span id="total_equity">{{ default_equity|floatformat:0 }}</span>% equity.
+    </div>
+  </div>
+</div>
+
+<!-- Calculation Script: -->
+<script>
+function intComma(x) { return x.toLocaleString(); }
+
+function calculate() {
+    let users = parseInt(document.getElementById('users_slider').value);
+    let conversion = parseFloat(document.getElementById('conversion_slider').value) / 100;
+    let avg_txn = parseFloat(document.getElementById('avg_txn_slider').value);
+    let equity = parseFloat(document.getElementById('init_equity').value) / 100;
+    let investment = parseFloat(document.getElementById('init_investment').value);
+
+    // Update displays
+    document.getElementById('users_display').innerText = intComma(users);
+    document.getElementById('conversion_value').innerText = Math.round(conversion*100) + "%";
+    document.getElementById('avg_txn_value').innerText = "$" + intComma(avg_txn);
+
+    let company_revenue = users * conversion * avg_txn;
+    document.getElementById('company_revenue').innerText = "$" + intComma(Math.round(company_revenue));
+
+    let investor_profit = company_revenue * equity;
+    document.getElementById('roi_dollar').innerText = "$" + intComma(Math.round(investor_profit));
+    let roi_percent = investment > 0 ? (investor_profit / investment * 100) : 0;
+    let roi_multiple = investment > 0 ? (investor_profit / investment).toFixed(1) : 0;
+    document.getElementById('roi_percent').innerText = roi_percent.toFixed(1) + "%";
+    document.getElementById('roi_multiple').innerText = roi_multiple + "x";
+}
+
+// Reset function for the Reset button
+function resetToDefault() {
+    document.getElementById('users_slider').value = {{ default_users }};
+    document.getElementById('conversion_slider').value = {{ default_conversion }};
+    document.getElementById('avg_txn_slider').value = {{ default_avg_txn }};
+    calculate();
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+    ["users_slider", "conversion_slider", "avg_txn_slider"].forEach(function(id){
+        document.getElementById(id).addEventListener("input", calculate);
+    });
+    calculate();
+});
+</script>
+<!-- Hidden initial data -->
+<input type="hidden" id="init_equity" value="{{ default_equity }}">
+<input type="hidden" id="init_investment" value="{{ default_investment }}">
+
 {% endblock %}
