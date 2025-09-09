@@ -695,14 +695,25 @@ def browse_companies(request):
             InvestorInvestment.objects.filter(investor=investor_profile)
             .values_list('startup_id', flat=True)
         )
-
-    return render(request, "browse_companies.html", {
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "investor_partials/browse_companies_partial.html", {
+            "section": "deal_discovery",
+            "subsection": "browse_companies",
+            "startups": startups,
+            "saved": saved,
+            "invested": invested,
+        })
+    else:
+        # return full page with sidebar
+        return render(request, "browse_companies.html", {
         "section": "deal_discovery",
         "subsection": "browse_companies",
         "startups": startups,
         "saved": saved,
         "invested": invested,
     })
+    
 
 
 
