@@ -434,9 +434,9 @@
                     </button>
                     <ul class="sidebar-subnav">
                         <li><a href="{% url 'browse_companies' %}" hx-get="{% url 'browse_companies' %}" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'browse_companies' %}active{% endif %}">Browse Companies</a></li>
-                        <li><a href="{% url 'saved_companies' %}" class="sidebar-link {% if subsection == 'saved_companies' %}active{% endif %}">Saved Companies</a></li>
-                        <li><a href="{% url 'investment_pipeline' %}" class="sidebar-link">Investment Pipeline</a></li>
-                        <li><a href="{% url 'sector_analysis' %}" class="sidebar-link">Sector Analysis</a></li>
+                        <li><a href="{% url 'saved_companies' %}" hx-get="{% url 'saved_companies' %}" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'saved_companies' %}active{% endif %}">Saved Companies</a></li>
+                        <li><a href="{% url 'investment_pipeline' %}" hx-get="{% url 'investment_pipeline' %}" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'investment_pipeline' %}active{% endif %}">Investment Pipeline</a></li>
+                        <li><a href="{% url 'sector_analysis' %}" hx-get="{% url 'sector_analysis' %}" hx-target="#main-content" hx-push-url="true" class="sidebar-link {% if subsection == 'sector_analysis' %}active{% endif %}">Sector Analysis</a></li>
                     </ul>
                 </li>
                 <li>
@@ -455,7 +455,7 @@
                         <span class="arrow"></span>
                     </button>
                     <ul class="sidebar-subnav">
-                        <li><a href="{% url 'analytics_dashboard' %}" class="sidebar-link">Analytics Dashboard</a></li>
+                        <li><a href="{% url 'analytics_dashboard' %}" hx-get="{% url 'analytics_dashboard' %}" hx-target="#main-content" hx-push-url="true" class="sidebar-link">Analytics Dashboard</a></li>
                     </ul>
                 </li>
                 <li>

@@ -726,11 +726,22 @@ def save_company(request, startup_id):
 @login_required
 def saved_companies(request):
     saves = InvestorCompanySave.objects.filter(investor=request.user).select_related('startup')
-    return render(request, "saved_companies.html", {
+
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "investor_partials/saved_companies_partial.html", {
+            "section": "deal_discovery",
+            "subsection": "saved_companies",
+            "saves": saves
+        })
+    else:
+        # return full page with sidebar
+        return render(request, "saved_companies.html", {
         "section": "deal_discovery",
         "subsection": "saved_companies",
         "saves": saves
     })
+    
 
 @login_required
 def invest_in_company(request, startup_id):
@@ -781,11 +792,23 @@ def investment_pipeline(request):
         investor=investor_profile,
         is_active=True
     ).select_related('startup').order_by('-invested_at')
-    return render(request, "investment_pipeline.html", {
+
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "investor_partials/investment_pipeline_partial.html", {
+            "pipeline": pipeline,
+            "section": "deal_discovery",
+            "subsection": "investment_pipeline"
+        })
+    else:
+        # return full page with sidebar
+        return render(request, "investment_pipeline.html", {
         "pipeline": pipeline,
         "section": "deal_discovery",
         "subsection": "investment_pipeline"
     })
+    
+    
 
 @login_required
 def sector_analysis(request):
@@ -797,11 +820,23 @@ def sector_analysis(request):
     startups = StartupProfile.objects.filter(id__in=all_startup_ids)
     sectors = [s.tech_component or "Unknown" for s in startups]  # Change to your actual field!
     sector_counts = dict(Counter(sectors))
-    return render(request, "sector_analysis.html", {
+
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "investor_partials/sector_analysis_partial.html", {
+            "sector_counts": sector_counts,
+            "section": "deal_discovery",
+            "subsection": "sector_analysis"
+        })
+    else:
+        # return full page with sidebar
+        return render(request, "sector_analysis.html", {
         "sector_counts": sector_counts,
         "section": "deal_discovery",
         "subsection": "sector_analysis"
     })
+
+    
 
 # ----------- Investment Management ------------
 @login_required
@@ -845,10 +880,21 @@ def analytics_dashboard(request):
     total_roi = sum(((inv.startup.arr or 0) * (inv.startup.equity_offered or 0)/100) for inv in investments)  # Example calc
     num_investments = investments.count()
     top_startups = investments.order_by('-amount')[:3]
-    return render(request, "analytics_dashboard.html", {
-        "total_invested": total_invested,
-        "total_roi": total_roi,
-        "num_investments": num_investments,
+
+    if request.headers.get("HX-Request") == "true":
+        # return only the content (no sidebar)
+        return render(request, "investor_partials/analytics_dashboard_partial.html", {
+            "total_invested": total_invested,
+            "total_roi": total_roi,
+            "num_investments": num_investments,
+            "top_startups": top_startups
+        })
+    else:
+        # return full page with sidebar
+        return render(request, "analytics_dashboard.html", {
+            "total_invested": total_invested,
+            "total_roi": total_roi,
+            "num_investments": num_investments,
         "top_startups": top_startups,
         "section": "portfolio_analytics",
         "subsection": "analytics_dashboard"
