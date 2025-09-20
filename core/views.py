@@ -14,6 +14,7 @@ from collections import Counter
 from .models import StartupProfile,InvestorProfile, CapTableEntry
 
 
+
 @api_view(['GET'])
 def hello_world(request):
     return Response({"message": "Hello, DealBook API!"})

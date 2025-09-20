@@ -167,13 +167,13 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "jxhhcuryrxmecazrkrxk5lnkfala")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "j2nupxnxfov2fmelygrvvmbqzbi2qjykjjage2jsxyoizalyxvunu")
-AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME", "dealbook-media")
-AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL", "https://gateway.storjshare.io")
-AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME", "us-east-1")
-AWS_S3_SIGNATURE_VERSION = os.getenv("AWS_S3_SIGNATURE_VERSION", "s3v4")
-AWS_S3_ADDRESSING_STYLE = os.getenv("AWS_S3_ADDRESSING_STYLE", "virtual")
+AWS_ACCESS_KEY_ID = "jxhhcuryrxmecazrkrxk5lnkfala"
+AWS_SECRET_ACCESS_KEY = "j2nupxnxfov2fmelygrvvmbqzbi2qjykjjage2jsxyoizalyxvunu"
+AWS_STORAGE_BUCKET_NAME = "dealbook-media"
+AWS_S3_ENDPOINT_URL = "https://gateway.storjshare.io"
+AWS_S3_REGION_NAME = "us-east-1"
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_S3_ADDRESSING_STYLE = "AWS_S3_ADDRESSING_STYLE", "virtual"
 AWS_S3_USE_SSL = True
 MEDIA_URL = '/media/'
 
