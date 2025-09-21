@@ -185,4 +185,8 @@ print("AWS_S3_REGION_NAME:", AWS_S3_REGION_NAME)
 print("AWS_S3_SIGNATURE_VERSION:", AWS_S3_SIGNATURE_VERSION)
 print("AWS_S3_ADDRESSING_STYLE:", AWS_S3_ADDRESSING_STYLE)
 
+from django.core.files.storage import default_storage
+print(">>> [DEBUG] STORAGE CLASS:", default_storage.__class__)
+
+
 
