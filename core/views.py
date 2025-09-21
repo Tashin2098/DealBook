@@ -12,7 +12,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 from collections import Counter
 from .models import StartupProfile,InvestorProfile, CapTableEntry
-
+from django.core.files.storage import default_storage
 
 
 @api_view(['GET'])
